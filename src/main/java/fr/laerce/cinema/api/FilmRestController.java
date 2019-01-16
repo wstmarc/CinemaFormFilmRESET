@@ -1,11 +1,9 @@
 package fr.laerce.cinema.api;
 
 import fr.laerce.cinema.model.Film;
+import fr.laerce.cinema.model.Genre;
 import fr.laerce.cinema.service.FilmManager;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,4 +27,16 @@ public class FilmRestController {
     public Film getById(@PathVariable("id")long id){
         return filmManager.getById(id);
     }
+
+/*    @PutMapping("/genres")
+    public List<Genre> updateGenres() {
+        *//* TODO *//*
+        *//* 1) Je récupère l'ID du film (et les ids des genres)
+         * 2) findById du film
+         * 3) suppression des genres du film
+         * 4) pour chaque genre
+         *          findById du genre et ajout du film
+         * 5) Save du film*//*
+
+    }*/
 }
