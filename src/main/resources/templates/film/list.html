@@ -14,6 +14,56 @@
 
 <body>
 
+<!-- Modale pour l'ajout, modification, suppression d'un film -->
+<div id="modalUI" class="ui modal">
+    <div class="ui container padded">
+        <div class="Header">
+            <h3>Film</h3>
+        </div>
+        <div class="ui padded form">
+            <input type="hidden" name="id" id="id-film">
+            <div class="fourteen wide field">
+                <input type="text" name="name" id="name-film">
+            </div>
+            <div class="actions">
+                <div class="circular ui green icon button" onclick="updateFilm()" id="mod-button">
+                    <i class="white check icon icon"></i>
+                </div>
+                <!--<div class="circular ui icon red button" onclick="eraseFilm()" id="del-button">-->
+                <div class="circular ui icon red button" onclick="openConfirmDialog()" id="del-button">
+                    <i class="white minus icon"></i>
+                </div>
+                <div class="circular ui icon blue button" onclick="exitDialog()" id="exit-button">
+                    <i class="white close icon icon"></i>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale pour la demande de confirmation de suppression -->
+<div id="modalConfirmSuppr" class="green ui mini modal">
+    <div class="ui red header">ATTENTION</div>
+    <div class="content">
+        <p  class="ui header">Voulez-vous confirmer la suppression ?</p>
+    </div>
+    <div class="actions">
+        <!--<div class="ui approve labeled icon button" onclick="eraseFilm()">Oh oui<i class="checkmark green icon"></i></div>-->
+        <div class="ui green approve right labeled icon button" onclick="eraseFilm()">Oh oui<i class="checkmark icon"></i></div>
+        <!--<div class="ui button">Fuck, pas besoin de ce bouton!</div>-->
+        <div class="ui red cancel right labeled icon button" onclick="exitDialog()">Non pitié<i class="close icon"></i></div>
+    </div>
+</div>
+
+<!-- Modale pour afficher un message d'erreur -->
+<div id="modalErrorMessage" class="ui negative message modal">
+    <i class="close labeled right icon" onclick="exitDialog()"></i>
+    <div id="messageErr" class="header">
+        Ici devrait s'afficher le message d'erreur dynamiquement
+    </div>
+</div>
+
 <div th:include="fragments/layout :: header-page">
 </div>
 
@@ -36,14 +86,167 @@
     </div>
 </div>
 
+<!-- TABLE listant tous les films -->
+<table class="ui selectable celled table">
+    <thead>
+    <tr>
+        <th>Film</th>
+    </tr>
+    </thead>
+    <tbody id="film-body">
+    <tr id="rfilm-template"><td id="film-template">un film</td></tr>
+    <tr th:each="film: ${films}" th:id="'rfilm'+${film.id}" th:onclick="'openDialogMod(' + ${film.id}+')'">
+        <td th:text="${film.title}" th:id="'film'+ ${film.id}">Un film</td>
+    </tr>
+    </tbody>
+</table>
+
 <!-- BOUTONS TEST -->
-<div class="ui primary button" onclick="">
+<div class="ui primary button" onclick="addFilm()" id="add-button">
     Ajouter un nouveau film
 </div>
 
 <div th:include="fragments/layout :: footer-js"></div>
 <script type="application/javascript">
     $('#menu-films').addClass("active");
+    $('#modalErrorMessage').modal('hide');
+
+    function openDialogMod(idFilm) {
+        console.log("openDialogMod");
+        $('#modalConfirmSuppr').modal('hide');
+
+        $('#id-film').val(idFilm);
+        $('#name-film').val($('#film' + idFilm).text());
+        $('#mod-button').show();
+        $('#del-button').show();
+
+        $('#modalUI').modal('show');
+    }
+
+    function addFilm() {
+        console.log("addFilm");
+
+        filmVal = {
+            "id": $('#id-film').val(),
+            "name": $('#name-film').val()
+        };
+        $.ajax({
+            url: '/api/film',
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: onSuccessAddNameFilm,
+            error: onErrorOnFilmApi,
+            data: JSON.stringify(filmVal)
+        });
+    }
+
+    function eraseFilm() {
+        console.log("eraseFilm");
+        $('#modalUI').modal('hide');
+        filmVal = {
+            "id": $('#id-film').val(),
+            "name": $('#name-film').val()
+        };
+        console.log(filmVal);
+        $.ajax({
+            url: '/api/film/' + filmVal.id,
+            // url: '/api/film',
+            type: 'delete',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: onSuccessEraseNameFilm,
+            error: onErrorOnFilmApi,
+            data: JSON.stringify(filmVal)
+        });
+    }
+
+    function onSuccessAddNameFilm(result){
+        console.log("onSuccesAddNameFilm");
+        var row = $('#rfilm-template').clone();
+        row.attr("id", 'rfilm'+result.id);
+        col = row.find('#film-template');
+        col.attr("id", 'film'+result.id);
+        col.text(result.name);
+        row.attr("onclick","openDialogMod(" + result.id +")");
+        $("#film-body").append(row);
+        row.show();
+        /*
+        <tr id="rgenre-template"><td id="genre-template">un genre</td></tr>
+
+        <tr id="rgenre6" onclick="openDialogMod(6)">
+          <td id="genre6">Fantastique</td>
+      </tr>
+         */
+    // ADAPTATION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    /*<tr id="rfilm-template"><td id="film-template">un film</td></tr>
+    <tr id="rfilm6" onclick="openDialogMod(6)">
+        <td id="film6">Fantastique</td>
+    </tr>*/
+
+    }
+
+    function updateFilm() {
+        console.log("updateFilm");
+        // $('.ui.modal').modal('hide');
+        $('#modalUI').modal('hide');
+        filmVal = {
+            "id": $('#id-film').val(),
+            "name": $('#name-film').val()
+        };
+        $.ajax({
+            url: '/api/film',
+            // type: 'post',
+            type: 'get',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: onSuccessUpdateNameFilm,
+            error: onErrorOnFilmApi,
+            data: JSON.stringify(filmVal)
+        });
+    }
+
+    function onSuccessUpdateNameFilm(result) {
+        console.log("onSuccesUpdateNameFilm");
+        $("#film" + result.id).text(result.name);
+    }
+
+    function openConfirmDialog() {
+        console.log("openConfirmDialog")
+        /*$('.mini.modal')
+            .modal('show')
+        ;*/
+        $('#modalConfirmSuppr').modal('show');
+    }
+
+    function onErrorOnFilmApi(jqXHR, textStatus, errorThrown) {
+        console.log("onErrorOnFilmApi");
+        // alert("Echec de l'opération de mise à jour...");
+        console.log('jqXHR:');
+        console.log(jqXHR);
+        console.log("message d'erreur: " + jqXHR.responseJSON.message);
+        console.log('textStatus:');
+        console.log(textStatus);
+        console.log('errorThrown:');
+        console.log(errorThrown);
+        $("#messageErr").text("Echec de l'opération\n"+jqXHR.responseJSON.message);
+        $("#modalErrorMessage").modal('show');
+        // alert("Echec de l'opération\n"+jqXHR.responseJSON.message);
+    }
+
+    function onSuccessEraseNameFilm(result) {
+        console.log("onSuccesEraseNameFilm");
+        $('#rfilm' + result.id).remove();
+    }
+
+    function exitDialog() {
+        console.log("exitDialog");
+        // $('.ui.modal').modal('hide');
+        $('#modalUI').modal('hide');
+        // $('#modalConfirmSuppr').modal('hide');
+    }
+
+
 
 </script>
 

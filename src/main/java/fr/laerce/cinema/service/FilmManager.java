@@ -35,6 +35,21 @@ public class FilmManager {
         return film.getId();
     }
 
+/*    *//**
+     * Supprime un genre de la base si et seulement si il existe et n'est lié à aucun film
+     * @param id identitiant du genre à supprimer
+     * @return le genre détaché du système de persistance
+     * @throws IllegalStateException si le genre est encore lié à au moins un film
+     *//*
+    public Film delete(long id){
+        Film inbase=getById(id);
+        if(inbase.getGenres().size() > 0){
+            throw new IllegalStateException("Le film '"+inbase.getTitle()+"' est encore associé à des genres");
+        }
+        filmDao.deleteById(inbase.getId());
+        return inbase;
+    }*/
+
     /**
      * Supprime un rôle dans un film
      * @param roleId l'identifiant du rôle à supprimer

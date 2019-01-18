@@ -48,7 +48,12 @@ public class FilmController {
 
     @GetMapping("/add")
     public String add(Model model) {
+        Film film = new Film();
         model.addAttribute("title", "Ajout d'un film");
+        model.addAttribute("persons", personManager.getAll());
+        model.addAttribute("genresFilm", genreManager.getAll());
+        model.addAttribute("plays", film.getRoles());
+        model.addAttribute("newrole", new Play());
         model.addAttribute("film", new Film());
         return "film/form";
     }
