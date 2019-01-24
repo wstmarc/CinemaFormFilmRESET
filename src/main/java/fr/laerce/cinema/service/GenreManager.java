@@ -46,7 +46,7 @@ public class GenreManager {
      * @throws IllegalArgumentException si id n'est pas dans la base
      */
     public Genre getById(long id) {
-        return genreDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Genre.id inexistant: " + id));
+        return genreDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Genre.id inexistant: " + id + "."));
     }
 
     /**
@@ -57,7 +57,7 @@ public class GenreManager {
      */
     public Genre save(Genre genre) {
         if (genreDao.findByName(genre.getName()) != null) {
-            throw new IllegalArgumentException("Le genre \"" + genre.getName() + "\" existe déjà");
+            throw new IllegalArgumentException("Le genre \"" + genre.getName() + "\" existe déjà.");
         }
         return genreDao.save(genre);
 
@@ -78,7 +78,7 @@ public class GenreManager {
     public Genre delete(long id){
         Genre inbase=getById(id);
         if(inbase.getFilms().size() > 0){
-            throw new IllegalStateException("Le genre '"+inbase.getName()+"' est encore associé à des films");
+            throw new IllegalStateException("Le genre '"+inbase.getName()+"' est encore associé à des films.");
         }
         genreDao.deleteById(inbase.getId());
         return inbase;

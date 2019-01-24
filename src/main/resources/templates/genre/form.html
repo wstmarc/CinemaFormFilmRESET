@@ -432,12 +432,12 @@
         // alert("Echec de l'opération de mise à jour...");
         console.log('jqXHR:');
         console.log(jqXHR);
-        console.log("message d'erreur: " + jqXHR.responseJSON.message);
+        console.log("Message d'erreur: " + jqXHR.responseJSON.message);
         console.log('textStatus:');
         console.log(textStatus);
         console.log('errorThrown:');
         console.log(errorThrown);
-        $("#messageErr").text("Echec de l'opération\n"+jqXHR.responseJSON.message);
+        $("#messageErr").text("Echec de l'opération: "+jqXHR.responseJSON.message);
         $("#modalErrorMessage").modal('show');
         // alert("Echec de l'opération\n"+jqXHR.responseJSON.message);
     }

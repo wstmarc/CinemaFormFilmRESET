@@ -5,11 +5,7 @@
 
 
 <head>
-    <meta charset="UTF-8">
-    <title>Liste des films</title>
-    <div th:replace="fragments/layout :: header-css">
-
-    </div>
+    <div th:replace="fragments/layout :: header-css"></div>
 </head>
 
 <body>
@@ -148,7 +144,7 @@
             "id": $('#id-film').val(),
             "name": $('#name-film').val()
         };
-        console.log(filmVal);
+        //console.log(filmVal);
         $.ajax({
             url: '/api/film/' + filmVal.id,
             // url: '/api/film',

@@ -2,15 +2,15 @@
 <html lang="en"
 xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <div th:replace="fragments/layout :: header-css"></div>
 </head>
 <body>
+<div th:include="fragments/layout :: header-page"></div>
 <table>
     <tr th:each="person: ${persons}">
         <td><span th:utext="${person.surname}"></span> <a href="#" th:href="@{'/person/detail/'+${person.id}}">detail</a> </td>
     </tr>
 </table>
-
+<div th:include="fragments/layout :: footer-js"></div>
 </body>
 </html>

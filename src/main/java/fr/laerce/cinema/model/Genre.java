@@ -34,8 +34,8 @@ public class Genre {
     @NotBlank
     @NotNull
     @Size.List({/* Contraintes */
-        @Size(min = 3, message = "\"Name is 'too short'\""),
-        @Size(max = 30, message = "\"Name is 'TOO LONG'\"")
+        @Size(min = 3, message = "\"Name is 'too short'.\""),
+        @Size(max = 30, message = "\"Name is 'TOO LONG'.\"")
     })
 //    @Size(min=5, max=15, message="Le nom doit faire entre \\{{min}\\} et \\{{max}\\} caractères")//////////
     @Column(name = "name", nullable = false, length = 30)
