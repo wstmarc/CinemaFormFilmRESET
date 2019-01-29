@@ -1,4 +1,3 @@
-/*
 package fr.laerce.cinema.service;
 
 import fr.laerce.cinema.dao.TmdbFilmDao;
@@ -29,14 +28,21 @@ public class TmdbFilmManager {
         String day = String.format("%02d", date.getDayOfMonth());
         String month = String.format("%02d", date.getMonthValue());
         String year = String.valueOf(date.getYear());
-        String fileName = "movie_ids_" + month + "_" + year + ".json.gz";
+        String fileName = "movie_ids_" + month + "_" + day + "_" + year + ".json.gz";
+        //On a l'url dynamique
         String url = "http://files.tmdb.org/p/exports/" + fileName;
+
         try{
-            BufferedInputStream bis = new BufferedInputStream(
-                    new GZIPInputStream(
-                            new URL(url).openStream()
+            //1 Téléchargement
+            //2 Dézipper
+            //3 Lire bloc par bloc le fichier
+            BufferedInputStream bis = new BufferedInputStream(//3 fichier temporaire (tampon de TMDB)
+                    new GZIPInputStream(//2 décompression du fichier gzip
+                            new URL(url).openStream()//1 ouverture du stream, en fonction de l'url
                     )
             );
+
+            //Parsing du fichier
             BufferedReader br = new BufferedReader(new InputStreamReader(bis, StandardCharsets.UTF_8));
             String line;
             while((line = br.readLine()) != null){
@@ -45,7 +51,7 @@ public class TmdbFilmManager {
                 long tmmdgId = Long.valueOf(json.get("id").toString());
                 boolean adult = Boolean.valueOf(json.get("adult").toString());
                 TmdbFilm film = new TmdbFilm(title, tmmdgId);
-                if(!adult && tmdbFilmDao.findByTmdbId(tmmdgId) == null){
+                if(!adult && tmdbFilmDao.findByTmdbid(tmmdgId) == null){
                     tmdbFilmDao.save(film);
                 }
             }
@@ -56,4 +62,3 @@ public class TmdbFilmManager {
         }
     }
 }
-*/

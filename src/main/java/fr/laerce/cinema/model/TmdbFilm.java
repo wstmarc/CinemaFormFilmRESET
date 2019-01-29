@@ -1,4 +1,3 @@
-/*
 package fr.laerce.cinema.model;
 
 import org.checkerframework.common.aliasing.qual.Unique;
@@ -7,20 +6,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name= "TmdbFilmTitres")
+@Table(name= "tmdbfilmtitres")
 public class TmdbFilm {
 
     @Id
     @NotNull
-    @GeneratedValue
-//    @Column(name = "Id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private long id; // identifiant interne BDD
     @NotNull
-//    @Column(name = "title", nullable = true, length = 60)
+    @Column(name = "title")
     private String title;
     @NotNull
-    @Unique
-    //@Column(name = "Id", nullable = false, updatable = false)
+    //@Unique
+    @Column(name = "tmdbid")
     private long tmdbid; //identifiant externe extrait de TMDB
 
     public TmdbFilm(){
@@ -57,4 +56,3 @@ public class TmdbFilm {
         this.tmdbid = tmdbid;
     }
 }
-*/

@@ -3,6 +3,7 @@ package fr.laerce.cinema;
 import fr.laerce.cinema.dao.FilmDao;
 import fr.laerce.cinema.model.Film;
 import fr.laerce.cinema.model.Play;
+import fr.laerce.cinema.service.TmdbClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -43,6 +44,13 @@ public class CinemaApplication {
             }
         };
     }*/
+
+    @Bean
+    public CommandLineRunner runner(TmdbClient tc){
+        return args -> {
+            tc.getMovieByTmdbId(616);
+        };
+    }
 
 }
 

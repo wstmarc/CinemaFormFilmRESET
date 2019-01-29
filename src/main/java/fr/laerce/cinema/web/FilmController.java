@@ -6,10 +6,7 @@ import fr.laerce.cinema.dao.PersonDao;
 import fr.laerce.cinema.dao.RoleDao;
 import fr.laerce.cinema.model.Film;
 import fr.laerce.cinema.model.Play;
-import fr.laerce.cinema.service.FilmManager;
-import fr.laerce.cinema.service.GenreManager;
-import fr.laerce.cinema.service.ImageManager;
-import fr.laerce.cinema.service.PersonManager;
+import fr.laerce.cinema.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,9 +26,18 @@ public class FilmController {
     @Autowired
     GenreManager genreManager;
 
+    @Autowired
+    TmdbFilmManager tmdbFilmManager;//
 
     @Autowired
     ImageManager imm;
+
+
+    @GetMapping("/tmdbfilms")
+    public String tmdbdetail(){
+        tmdbFilmManager.importMovies();
+        return "index";
+    }
 
     @GetMapping("/list")
     public String list(Model model) {
