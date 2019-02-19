@@ -16,8 +16,12 @@ import java.util.TimeZone;
 @Component
 public class TmdbClient {
 
-    @Value("${tmdb.api.key}")
+    //   !!!!!!!! AVEC AUTHENTIFICATION  !!!!!!!
+    @Value("${tmdb.api.key}") // <<--
     private String apiKey;
+
+    @Value("${path.movies}")
+    private String pathMovie;
 
     private long secondsBeforeReset(String value){
         long timestamp = Long.valueOf(stripBraces(value));
@@ -36,35 +40,38 @@ public class TmdbClient {
         ResponseEntity<String> response;
         long reset;
 
-//        Dans la BDD interne de l'appli, ajouter les genres de la BDD externe tmdb avec leur id propre dans la BDD interne.
+//      TODO:  Dans la BDD interne de l'appli, ajouter les genres de la BDD externe tmdb avec leur id propre dans la BDD interne.
+        // à l'aide de ce lien
 //  "/3/genre/movie/list?api_key="+apiKey+"&language=fr-FR";
+        // Autrement dit: Adapter la BDD interne à celle de TMDb.
 
-        String resourceUrl = "https://api.themoviedb.org/3/movie/"+id+"?api_key="+apiKey+"&language=fr-FR";
+        // ---->>
+        String resourceUrl = pathMovie+id+"?api_key="+apiKey+"&language=fr-FR";
         response = template.getForEntity(resourceUrl, String.class);
-        System.out.println(response.getBody());
+        System.out.println(response.getBody());                             //*1
         JSONObject film = new JSONObject(response.getBody());
         JSONArray genres = (JSONArray) film.get("genres");
-        System.out.println("Titre : "+film.getString("title"));
+        System.out.println("Titre : "+film.getString("title"));          //*2
         for(int i = 0; i < genres.length(); i++){
             JSONObject genre = (JSONObject) genres.get(i);
-            System.out.println("- Genre : "+genre.getString("name"));
+            System.out.println("- Genre : "+genre.getString("name"));    //*3
         }
-        //stripBraces() pour enlever les crochets.
-        System.out.println("--------\nRequetes restantes : "+stripBraces(response.getHeaders().get("x-ratelimit-remaining").toString()));
+                                                                            //*4
+        System.out.println("--------\nRequetes restantes : "+stripBraces(response.getHeaders().get("x-ratelimit-remaining").toString())); //stripBraces() pour enlever les crochets.
         reset = secondsBeforeReset(response.getHeaders().get("x-ratelimit-reset").toString());
-        System.out.println("Temps restant avant reset : "+reset+"\n\n");
+        System.out.println("Temps restant avant reset : "+reset+"\n\n");    //*5
 
-
-        String resourceCredit = "https://api.themoviedb.org/3/movie/"+id+"/credits?api_key="+apiKey+"&language=fr-FR";
+        // ---->>
+        String resourceCredit = pathMovie+id+"/credits?api_key="+apiKey+"&language=fr-FR";
         response = template.getForEntity(resourceCredit, String.class);
         JSONObject credit = new JSONObject(response.getBody());
         JSONArray cast = (JSONArray) credit.get("cast");
         for (int i = 0; i < cast.length(); i++ ) {
-            JSONObject role = (JSONObject) cast.get(i);
+            JSONObject role = (JSONObject) cast.get(i);                     //*6
             System.out.println(role.getString("name")+" joue "+ role.getString("character"));
-        }
+        }                                                                   //*7
         System.out.println("--------\nRequetes restantes : "+stripBraces(response.getHeaders().get("x-ratelimit-remaining").toString()));
         reset = reset = secondsBeforeReset(response.getHeaders().get("x-ratelimit-reset").toString());
-        System.out.println("Temps restant avant reset : "+reset+"\n\n");
+        System.out.println("Temps restant avant reset : "+reset+"\n\n");    //*8
     }
 }
