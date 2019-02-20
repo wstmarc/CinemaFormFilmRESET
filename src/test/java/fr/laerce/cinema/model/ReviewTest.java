@@ -14,7 +14,7 @@ public class ReviewTest {
     }
 
     @Test
-    public void initialState() {
+    public void etatInitial() {
         Review comment = new Review();
         assertEquals(Review.WAITING_MODERATION, comment.getState());
     }
@@ -22,23 +22,22 @@ public class ReviewTest {
     @Test
     public void goodTransitionToPublie() {
         Review comment = new Review();
-        try{
+        try {
             comment.validByModerator();
             assertEquals(Review.PUBLISHED, comment.getState());
-        } catch (IllegalTransitionStateException e){
-            fail("Transition vers Publié non autorisée");
+        } catch (IllegalTransitionStateException e) {
+            fail("Transition attendue");
         }
     }
 
     @Test
     public void badTransitionToPublie() {
         Review comment = new Review();
-        try{
+        try {
             comment.keepForEditByModerator();
-            //assertEquals(Review.MUST_BE_MODIFIED, comment.getState());
             comment.validByModerator();
-            fail("Transition vers Publié non autorisée");
-        } catch (IllegalTransitionStateException e){
+            fail("Transition non autorisée");
+        } catch (IllegalTransitionStateException e) {
             assertEquals(Review.MUST_BE_MODIFIED, comment.getState());
         }
     }
@@ -46,51 +45,113 @@ public class ReviewTest {
     @Test
     public void goodTransitionToAbandonne() {
         Review comment = new Review();
-        try{
+        try {
             comment.keepForEditByModerator();
-//            comment.abandonnedByUser();
             comment.abandonByUser();
-            assertEquals(Review.ABANDONNED, comment.getState());
-        } catch (IllegalTransitionStateException e){
-            fail("Transition vers Abandonné non autorisée");
+            assertEquals(Review.ABANDONED, comment.getState());
+        } catch (IllegalTransitionStateException e) {
+            fail("Transition attendue");
         }
     }
 
     @Test
-    public void badTransitionToAbandonne() {
+    public void badTransitionToAbandoned() {
         Review comment = new Review();
-        try{
+        try {
             comment.validByModerator();
-            comment.deleteByUser();
-//            comment.abandonnedByUser();
             comment.abandonByUser();
-            fail("Transition vers Abandonné non autorisée");
-        } catch (IllegalTransitionStateException e){
-            assertEquals(Review.DELETED, comment.getState());
+            fail("Transition vers Abandonne non autorisée");
+        } catch (IllegalTransitionStateException e) {
+            assertEquals(Review.PUBLISHED, comment.getState());
         }
     }
 
     @Test
-    public void goodTransitionToReject() {
+    public void badTransitionToAbandoned2() {
         Review comment = new Review();
-        try{
-//            comment.rejectedByModerator();
+        try {
+            comment.rejectByModerator();
+            comment.abandonByUser();
+            fail("Transition vers Abandonne non autorisée");
+        } catch (IllegalTransitionStateException e) {
+            assertEquals(Review.REJECTED, comment.getState());
+        }
+    }
+
+    @Test
+    public void goodTransitionReject() {
+        Review comment = new Review();
+        try {
             comment.rejectByModerator();
             assertEquals(Review.REJECTED, comment.getState());
-        } catch (IllegalTransitionStateException e){
-            fail("Transition vers Abandonné non autorisée");
+        } catch (IllegalTransitionStateException e) {
+            fail("Transition attendue");
         }
     }
 
     @Test
-    public void goodTransitionToDelete() {
+    public void badTransitionReject() {
         Review comment = new Review();
-        try{
+        try {
             comment.validByModerator();
-            comment.deleteByUser();
-            assertEquals(Review.DELETED, comment.getState());
-        } catch (IllegalTransitionStateException e){
-            fail("Transition vers Abandonné non autorisée");
+            comment.rejectByModerator();
+            fail("Transition vers Rejected non autorisée");
+        } catch (IllegalTransitionStateException e) {
+            assertEquals(Review.PUBLISHED, comment.getState());
         }
     }
+
+
+    @Test
+    public void goodTransitionEditByUserFromPublished() {
+        Review comment = new Review();
+        try {
+            comment.validByModerator();
+            comment.editByUser();
+            assertEquals(Review.WAITING_MODERATION, comment.getState());
+        } catch (IllegalTransitionStateException e) {
+            fail("Transition attendue");
+        }
+    }
+
+
+    @Test
+    public void goodTransitionEditByUserFromWAITING_MODERATION() {
+        Review comment = new Review();
+        try {
+            assertEquals(Review.WAITING_MODERATION, comment.getState());
+            comment.editByUser();
+            assertEquals(Review.WAITING_MODERATION, comment.getState());
+        } catch (IllegalTransitionStateException e) {
+            fail("Aucune transition attendue");
+        }
+    }
+
+
+    @Test
+    public void goodTransitionEditByUserFromMUST_BE_MODIFIED() {
+        Review comment = new Review();
+        try {
+            comment.keepForEditByModerator();
+            assertEquals(Review.MUST_BE_MODIFIED, comment.getState());
+            comment.editByUser();
+            assertEquals(Review.WAITING_MODERATION, comment.getState());
+        } catch (IllegalTransitionStateException e) {
+            fail("Transition attendue");
+        }
+    }
+
+    @Test
+    public void badTransitionEditByUserFromABANDONED() {
+        Review comment = new Review();
+        try {
+            comment.keepForEditByModerator();
+            comment.abandonByUser();
+            comment.editByUser();
+            fail("Transition non permise attendue");
+        } catch (IllegalTransitionStateException e) {
+            assertEquals(Review.ABANDONED, comment.getState());
+        }
+    }
+
 }
