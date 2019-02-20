@@ -14,7 +14,7 @@ public class ReviewTest {
     }
 
     @Test
-    public void etatInitial() {
+    public void initialState() {
         Review comment = new Review();
         assertEquals(Review.WAITING_MODERATION, comment.getState());
     }
