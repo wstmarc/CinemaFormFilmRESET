@@ -5,6 +5,7 @@
 
 
 <head>
+    <meta charset="UTF-8">
     <div th:replace="fragments/layout :: header-css"></div>
 </head>
 
@@ -103,8 +104,9 @@
 </div>
 
 <div th:include="fragments/layout :: footer-js"></div>
+
 <script type="application/javascript">
-    $('#menu-films').addClass("active");
+    $('#menu-films').addClass("active");//ACTIVATION DU LIEN "films" dans le menu de navigation
     $('#modalErrorMessage').modal('hide');
 
     function openDialogMod(idFilm) {
@@ -117,6 +119,14 @@
         $('#del-button').show();
 
         $('#modalUI').modal('show');
+    }
+
+    function openConfirmDialog() {
+        console.log("openConfirmDialog")
+        /*$('.mini.modal')
+            .modal('show')
+        ;*/
+        $('#modalConfirmSuppr').modal('show');
     }
 
     function addFilm() {
@@ -132,26 +142,6 @@
             dataType: 'json',
             contentType: 'application/json',
             success: onSuccessAddNameFilm,
-            error: onErrorOnFilmApi,
-            data: JSON.stringify(filmVal)
-        });
-    }
-
-    function eraseFilm() {
-        console.log("eraseFilm");
-        $('#modalUI').modal('hide');
-        filmVal = {
-            "id": $('#id-film').val(),
-            "name": $('#name-film').val()
-        };
-        //console.log(filmVal);
-        $.ajax({
-            url: '/api/film/' + filmVal.id,
-            // url: '/api/film',
-            type: 'delete',
-            dataType: 'json',
-            contentType: 'application/json',
-            success: onSuccessEraseNameFilm,
             error: onErrorOnFilmApi,
             data: JSON.stringify(filmVal)
         });
@@ -174,12 +164,37 @@
           <td id="genre6">Fantastique</td>
       </tr>
          */
-    // ADAPTATION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    /*<tr id="rfilm-template"><td id="film-template">un film</td></tr>
-    <tr id="rfilm6" onclick="openDialogMod(6)">
-        <td id="film6">Fantastique</td>
-    </tr>*/
+        // ADAPTATION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        /*<tr id="rfilm-template"><td id="film-template">un film</td></tr>
+        <tr id="rfilm6" onclick="openDialogMod(6)">
+            <td id="film6">Fantastique</td>
+        </tr>*/
 
+    }
+
+    function eraseFilm() {
+        console.log("eraseFilm");
+        $('#modalUI').modal('hide');
+        filmVal = {
+            "id": $('#id-film').val(),
+            "name": $('#name-film').val()
+        };
+        //console.log(filmVal);
+        $.ajax({
+            url: '/api/film/' + filmVal.id,
+            // url: '/api/film',
+            type: 'delete',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: onSuccessEraseNameFilm,
+            error: onErrorOnFilmApi,
+            data: JSON.stringify(filmVal)
+        });
+    }
+
+    function onSuccessEraseNameFilm(result) {
+        console.log("onSuccesEraseNameFilm");
+        $('#rfilm' + result.id).remove();
     }
 
     function updateFilm() {
@@ -188,12 +203,12 @@
         $('#modalUI').modal('hide');
         filmVal = {
             "id": $('#id-film').val(),
-            "name": $('#name-film').val()
+            "title": $('#name-film').val()
         };
+        console.log(filmVal);
         $.ajax({
-            url: '/api/film',
-            // type: 'post',
-            type: 'get',
+            url: '/api/film/add',
+            type: 'post',
             dataType: 'json',
             contentType: 'application/json',
             success: onSuccessUpdateNameFilm,
@@ -205,14 +220,6 @@
     function onSuccessUpdateNameFilm(result) {
         console.log("onSuccesUpdateNameFilm");
         $("#film" + result.id).text(result.name);
-    }
-
-    function openConfirmDialog() {
-        console.log("openConfirmDialog")
-        /*$('.mini.modal')
-            .modal('show')
-        ;*/
-        $('#modalConfirmSuppr').modal('show');
     }
 
     function onErrorOnFilmApi(jqXHR, textStatus, errorThrown) {
@@ -230,16 +237,9 @@
         // alert("Echec de l'opération\n"+jqXHR.responseJSON.message);
     }
 
-    function onSuccessEraseNameFilm(result) {
-        console.log("onSuccesEraseNameFilm");
-        $('#rfilm' + result.id).remove();
-    }
-
     function exitDialog() {
         console.log("exitDialog");
-        // $('.ui.modal').modal('hide');
         $('#modalUI').modal('hide');
-        // $('#modalConfirmSuppr').modal('hide');
     }
 
 

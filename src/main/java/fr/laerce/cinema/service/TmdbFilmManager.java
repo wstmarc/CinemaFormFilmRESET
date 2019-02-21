@@ -1,19 +1,18 @@
 package fr.laerce.cinema.service;
 
+import com.google.common.io.ByteStreams;
 import fr.laerce.cinema.dao.TmdbFilmDao;
 import fr.laerce.cinema.model.TmdbFilm;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -25,6 +24,10 @@ import java.util.zip.GZIPInputStream;
 
 @Component
 public class TmdbFilmManager {
+    @Value("${cinema.tmp.path}")        //#
+    private String tmpFilePath;         //#
+
+    @Autowired  //#
     private TmdbFilmDao tmdbFilmDao;
 
     /*  TODO: recréer une méthode qui prend en compte la connexion (authentification TMDB)*/
@@ -37,19 +40,16 @@ public class TmdbFilmManager {
     }
 
     public void importMovies(){
-//       !!!! SANS AUTHENTIFICATION  !!!!!!!
+        //On récupère la date du jour pour éviter de charger des fichiers déjà dépubliés de TMDb.
         LocalDate date = LocalDate.now().minusDays(1);
+        //Formatage de la date pour ajouter des 0 pour les mois et les jours inférieurs à 10
         String day = String.format("%02d", date.getDayOfMonth());
         String month = String.format("%02d", date.getMonthValue());
         String year = String.valueOf(date.getYear());
+        //Construction de l'URL DYNAMIQUE
+        //url sans authentification
         String fileName = "movie_ids_" + month + "_" + day + "_" + year + ".json.gz";
-        //URL DYNAMIQUE
-        //url sans authentification
         String url = "http://files.tmdb.org/p/exports/" + fileName; // <<-- All of the exported files are available for download from http://files.tmdb.org
-        //There is currently no authentication on these files since they are mostly useless unless you're a user of our service.
-
-        //url sans authentification
-        url = "http://files.tmdb.org/p/exports/" + fileName; // <<-- All of the exported files are available for download from http://files.tmdb.org
 
         try{
             //1 Téléchargement
@@ -60,17 +60,27 @@ public class TmdbFilmManager {
                             new URL(url).openStream()//1 ouverture du stream, en fonction de l'url
                     )
             );
+            //AUTRE MÉTHODE
+/*            // file stream
+            InputStream httpIS = new URL(url).openStream();
+            // unzip file
+            InputStream gzipIS = new GZIPInputStream(httpIS);
+            // buffering the file : read block by block to gain performance
+            InputStream bufferedIS = new BufferedInputStream(gzipIS);
 
-            //Parsing du fichier
+            System.out.println(bufferedIS);*/
+
+            //Parsing du fichier avec la bibliothèque json.org
             BufferedReader br = new BufferedReader(new InputStreamReader(bis, StandardCharsets.UTF_8));
             String line;
             while((line = br.readLine()) != null){
                 JSONObject json = new JSONObject(line);
                 String title = json.get("original_title").toString();
-                long tmmdgId = Long.valueOf(json.get("id").toString());
+                long tmdbId = Long.valueOf(json.get("id").toString());
+//                long tmdbId = Long.parseLong(json.get("id").toString());
                 boolean adult = Boolean.valueOf(json.get("adult").toString());
-                TmdbFilm film = new TmdbFilm(title, tmmdgId);
-                if(!adult && tmdbFilmDao.findByTmdbid(tmmdgId) == null){
+                TmdbFilm film = new TmdbFilm(title, tmdbId);
+                if(!adult && tmdbFilmDao.findById(tmdbId) == null){
                     tmdbFilmDao.save(film);
                 }
             }
@@ -81,51 +91,52 @@ public class TmdbFilmManager {
         }
     }
 
-    /*private long secondsBeforeReset(String value){
-        long timestamp = Long.valueOf(stripBraces(value));
-        LocalDateTime resetTime =
-                LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault());
-        LocalDateTime now = LocalDateTime.now();
-        return now.until( resetTime, ChronoUnit.SECONDS);
-    }
+    public void ImportMoviesViaLocalTempTmdbFile() {
+        // we recover the date of the day before to avoid loading a file still unpublished by TMDV
+        LocalDate date = LocalDate.now().minusDays(1);
+        // date format to add zeros for months and days less than 10
+        String day = String.format("%02d", date.getDayOfMonth());
+        String month = String.format("%02d", date.getMonthValue());
+        String year = String.valueOf(date.getYear());
 
-    private String stripBraces(String value){
-        return value.substring(0, value.length()-1).substring(1);
-    }
 
-//    TODO adapter le code de la méthode getMovieByTmdbId à la méthode importMovieById
-    public void importMovieById(long id) throws Exception{
-        RestTemplate template = new RestTemplate();
-        ResponseEntity<String> response;
-        long reset;
+        // url construction
+        String fileName = "movie_ids_"+month+"_"+day+"_"+year+".json.gz";
+        String url = "http://files.tmdb.org/p/exports/"+fileName;
 
-        String resourceUrl = "https://api.themoviedb.org/3/movie/"+id+"?api_key="+apiKey+"&language=fr-FR";
-        response = template.getForEntity(resourceUrl, String.class);
-        System.out.println(response.getBody());
-        JSONObject film = new JSONObject(response.getBody());
-        JSONArray genres = (JSONArray) film.get("genres");
-        System.out.println("Titre : "+film.getString("title"));
-        for(int i = 0; i < genres.length(); i++){
-            JSONObject genre = (JSONObject) genres.get(i);
-            System.out.println("- Genre : "+genre.getString("name"));
+        String tmpFile = tmpFilePath+""+fileName;
+
+        try {
+            // file stream
+            InputStream is = new URL(url).openStream();
+            // write file stream datas in a temp local file (tmpFile)
+            FileOutputStream fos = new FileOutputStream(tmpFile);
+            // do it with Guava (Google API for Java)
+            ByteStreams.copy(is, fos);
+            is.close();
+            fos.flush();
+            fos.close();
+            BufferedInputStream bis = new BufferedInputStream(new GZIPInputStream(new FileInputStream(tmpFile)));
+
+            // parsing the file with json.org library
+            BufferedReader br = new BufferedReader(new InputStreamReader(bis, StandardCharsets.UTF_8));
+            String line;
+            while((line = br.readLine()) != null) {
+                JSONObject json = new JSONObject(line);
+                String title = json.get("original_title").toString();
+                long tmdbId = Long.valueOf(json.get("id").toString());
+                boolean adult = Boolean.valueOf(json.get("adult").toString());
+                TmdbFilm film = new TmdbFilm(title, tmdbId);
+                if(!adult && tmdbFilmDao.findById(tmdbId) == null) {
+                    tmdbFilmDao.save(film);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
-        System.out.println("--------\nRequetes restantes : "+stripBraces(response.getHeaders().get("x-ratelimit-remaining").toString())); //stripBraces() pour enlever les crochets.
-        reset = secondsBeforeReset(response.getHeaders().get("x-ratelimit-reset").toString());
-        System.out.println("Temps restant avant reset : "+reset+"\n\n");
-
-        String resourceCredit = "https://api.themoviedb.org/3/movie/"+id+"/credits?api_key="+apiKey+"&language=fr-FR";
-        response = template.getForEntity(resourceCredit, String.class);
-        JSONObject credit = new JSONObject(response.getBody());
-        JSONArray cast = (JSONArray) credit.get("cast");
-        for (int i = 0; i < cast.length(); i++ ) {
-            JSONObject role = (JSONObject) cast.get(i);
-            System.out.println(role.getString("name")+" joue "+ role.getString("character"));
-        }
-        System.out.println("--------\nRequetes restantes : "+stripBraces(response.getHeaders().get("x-ratelimit-remaining").toString()));
-        reset = reset = secondsBeforeReset(response.getHeaders().get("x-ratelimit-reset").toString());
-        System.out.println("Temps restant avant reset : "+reset+"\n\n");
-    }*/
+    }
 
 
 }

@@ -298,8 +298,13 @@
 <div th:include="fragments/layout :: footer-js"></div><!-- INCLUSION de tous les scripts javascript -->
 
 <script type="application/javascript">
-    $('#menu-genres').addClass("active");
-/*    $('.ui.dropdown').dropdown();*/
+    //Exemple de liste déroulante (dropdown list)::
+    //Via data-* Attributes:
+    //<a href="#" class="ui.dropdown" data-toggle="dropdown">Dropdown Example</a>
+    //Via javascript:
+    //$('.ui.dropdown').dropdown();
+    //!!!Pour le javascript l'attribut data-toggle="dropdown" est requis que la méthode .dropdown() soit appelée ou non.
+    $('#menu-genres').addClass("active");//ACTIVATION DU LIEN "genres" dans le menu de navigation
     $('.ui.modal').modal();
     $('#modalConfirmSuppr').modal('hide');
 
@@ -362,6 +367,26 @@
         });
     }
 
+    function onSuccessAddNameGenre(result){
+        console.log("onSuccesAddNameGenre");
+        var row = $('#rgenre-template').clone();
+        row.attr("id", 'rgenre'+result.id);
+        col = row.find('#genre-template');
+        col.attr("id", 'genre'+result.id);
+        col.text(result.name);
+        row.attr("onclick","openDialogMod(" + result.id +")");
+        $("#genre-body").append(row);
+        row.show();
+        /*
+        <tr id="rgenre-template"><td id="genre-template">un genre</td></tr>
+
+        <tr id="rgenre6" onclick="openDialogMod(6)">
+          <td id="genre6">Fantastique</td>
+      </tr>
+         */
+
+    }
+
     function eraseGenre() {
         console.log("eraseGenre");
         // $('.ui.modal').modal('hide');
@@ -383,6 +408,11 @@
         });
     }
 
+    function onSuccessEraseNameGenre(result) {
+        console.log("onSuccesEraseNameGenre");
+        $('#rgenre' + result.id).remove();
+    }
+
     function updateGenre() {
         console.log("updateGenre");
         // $('.ui.modal').modal('hide');
@@ -400,26 +430,6 @@
             error: onErrorOnGenreApi,
             data: JSON.stringify(genreVal)
         });
-    }
-
-    function onSuccessAddNameGenre(result){
-        console.log("onSuccesAddNameGenre");
-        var row = $('#rgenre-template').clone();
-        row.attr("id", 'rgenre'+result.id);
-        col = row.find('#genre-template');
-        col.attr("id", 'genre'+result.id);
-        col.text(result.name);
-        row.attr("onclick","openDialogMod(" + result.id +")");
-        $("#genre-body").append(row);
-        row.show();
-        /*
-        <tr id="rgenre-template"><td id="genre-template">un genre</td></tr>
-
-        <tr id="rgenre6" onclick="openDialogMod(6)">
-          <td id="genre6">Fantastique</td>
-      </tr>
-         */
-
     }
 
     function onSuccessUpdateNameGenre(result) {
@@ -442,16 +452,9 @@
         // alert("Echec de l'opération\n"+jqXHR.responseJSON.message);
     }
 
-    function onSuccessEraseNameGenre(result) {
-        console.log("onSuccesEraseNameGenre");
-        $('#rgenre' + result.id).remove();
-    }
-
     function exitDialog() {
         console.log("exitDialog");
-        // $('.ui.modal').modal('hide');
         $('#modalUI').modal('hide');
-        // $('#modalConfirmSuppr').modal('hide');
     }
 
 </script>

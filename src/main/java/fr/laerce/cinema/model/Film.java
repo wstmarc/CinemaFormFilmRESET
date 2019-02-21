@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -33,23 +33,27 @@ public class Film {
     @Column(name="release_date", nullable = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
+    @Basic                          //#
+    @Column(name = "idtmdb", nullable = true)        //#
+    private Long idtmdb;      //#
     @ManyToOne
-    @JoinColumn(name ="film_director")
-    @JsonManagedReference
+    @JoinColumn(name ="film_director", nullable = true)
+    @JsonIgnore         //#
+    //@JsonManagedReference //#
     private Person director;
 
 
     @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = false)
-    @JsonBackReference
-//    @JsonIgnore
+    //@JsonBackReference
+    @JsonIgnore     //#
     private Set<Play> roles;
 
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name="film_genre", joinColumns = @JoinColumn(name="film_id"),
     inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    @JsonManagedReference
-//    @JsonIgnore
+    //@JsonManagedReference
+    @JsonIgnore
     private Set<Genre> genres;
 
 
@@ -140,8 +144,15 @@ public class Film {
         this.reviews = reviews;
     }
 
+    public Long getIdtmdb() {                 //#
+        return idtmdb;                              //#
+    }                                               //#
 
-    @Override
+    public void setIdtmdb(Long idtmdb) {      //#
+        this.idtmdb = idtmdb;                       //#
+    }                                               //#
+
+/*    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -165,5 +176,24 @@ public class Film {
         result = 31 * result + (imagePath != null ? imagePath.hashCode() : 0);
         result = 31 * result + (summary != null ? summary.hashCode() : 0);
         return result;
+    }*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Film)) return false;
+        Film film = (Film) o;
+        return getId() == film.getId() &&
+                Double.compare(film.getRating(), getRating()) == 0 &&
+                Objects.equals(getTitle(), film.getTitle()) &&
+                Objects.equals(getImagePath(), film.getImagePath()) &&
+                Objects.equals(getSummary(), film.getSummary()) &&
+                Objects.equals(getReleaseDate(), film.getReleaseDate()) &&
+                Objects.equals(getIdtmdb(), film.getIdtmdb());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTitle(), getRating(), getImagePath(), getSummary(), getReleaseDate(), getIdtmdb());
     }
 }

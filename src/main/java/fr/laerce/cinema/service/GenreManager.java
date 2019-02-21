@@ -56,9 +56,9 @@ public class GenreManager {
      * @return le genre sauvegardé ou créé
      */
     public Genre save(Genre genre) {
-        if (genreDao.findByName(genre.getName()) != null) {
-            throw new IllegalArgumentException("Le genre \"" + genre.getName() + "\" existe déjà.");
-        }
+/*        if (genreDao.findByName(genre.getName()) != null) {   //#
+            throw new IllegalArgumentException("Le genre \"" + genre.getName() + "\" existe déjà."); //#
+        }*/ //#
         return genreDao.save(genre);
 
 /*        try {
@@ -83,5 +83,11 @@ public class GenreManager {
         genreDao.deleteById(inbase.getId());
         return inbase;
     }
+    public Genre findByIdTmdb(long id){   //#
+        return genreDao.findByIdtmdb(id);       //#
+    }                                           //#
 
+    public boolean existsByIdtmdb(long id){   //#
+        return genreDao.existsByIdtmdb(id);         //#
+    }                                               //#
 }

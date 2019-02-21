@@ -8,9 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.math.BigInteger;
 import java.util.List;
 
 @Repository
 public interface FilmDao extends CrudRepository<Film, Long> {
     public List<Film> findAllByOrderByTitle();
+    public Film findByTitle(String name);           //#
+    public boolean existsByIdtmdb(long id);   //#
+    public Film findByIdtmdb(long id);        //#
 }

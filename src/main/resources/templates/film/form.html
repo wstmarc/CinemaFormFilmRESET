@@ -8,6 +8,7 @@
 <body>
 <div th:include="fragments/layout :: header-page"></div>
 
+<!--MODALES MOULAFRITA-->
 <!-- TODO : Modale pour l'AJOUT, MODIFICATION, SUPPRESSION d'un film -->
 <div id="modalUI" class="ui modal">
     <div class="ui container padded">
@@ -60,6 +61,61 @@
         Ici devrait s'afficher le message d'erreur dynamiquement
     </div>
 </div>
+<!--FIN MODALES MOULA FRITA-->
+
+<!--MODALES JOEL-->
+<!--verification de suppression-->
+<!--<div  id="supp" class="ui modal">
+    <div class="ui red header">Attention! </div>
+    <div class="content">
+        <p>Êtes-vous sûr de vouloir supprimer ce genre   </p>
+    </div>
+    &lt;!&ndash;<div class="actions">&ndash;&gt;
+    &lt;!&ndash;<div class="ui positive right labeled icon button" onclick="eraseGenre()" >oui<i class="checkmark icon"></i></div>&ndash;&gt;
+    &lt;!&ndash;<div class="ui negative right labeled icon button" >Non<i class="close icon"></i></div>&ndash;&gt;
+    &lt;!&ndash;&lt;!&ndash;<div class="ui minus button" onclick="exitDialog()">Cancel</div>&ndash;&gt;&ndash;&gt;
+    &lt;!&ndash;</div>&ndash;&gt;
+    <div class="actions">
+        &lt;!&ndash;<div class="ui approve labeled icon button" onclick="eraseGenre()">Oh oui<i class="checkmark green icon"></i></div>&ndash;&gt;
+        <div class="ui green approve right labeled icon button" onclick="eraseGenre()">oui<i class="checkmark icon"></i></div>
+        &lt;!&ndash;<div class="ui button">Fuck, pas besoin de ce bouton!</div>&ndash;&gt;
+        <div class="ui red cancel right labeled icon button" onclick="exitDialog()">Non<i class="close icon"></i></div>
+    </div>
+</div>
+
+<form action="#" class="ui form" method="post" th:action="@{/film/addrole}" th:object="${newrole}">
+    <input id="film" name="film" th:value="${film.id}" type="hidden">
+    <div class="four fields">
+        <div class="five wide field">
+            <label>Acteur</label>
+            <select name="actor" class="ui search dropdown">
+                <option value="" selected disabled>Choisissez un acteur</option>
+                <option
+                        th:each="person: ${persons}"
+                        th:text="${person.givenname}+' '+${person.surname}"
+                        th:value="${person.id}">
+                    Prénom Nom
+                </option>
+            </select>
+        </div>
+        <div class="six wide field">
+            <label>Rôle</label>
+            <input name="name" th:value="*{name}" type="text">
+        </div>
+        <div class="two wide field">
+            <label>Rang</label>
+            <input name="rank" th:value="*{rank}" type="number">
+        </div>
+
+
+        <div class="three wide field">
+            <label>&nbsp;</label>
+            <button type="submit" class="circular ui green icon button ">
+                <i class="white plus icon"></i>
+            </button>&lt;!&ndash;xxxx&ndash;&gt;
+        </div>
+    </div>
+</form>-->
 
 
 <h2 class="ui dividing">Fiche signalétique</h2>
@@ -88,7 +144,7 @@
         </div>
         <div class="ten wide field">
             <label>Réalisateur</label>
-            <select th:field="${film.director}" class="ui search dropdown">
+            <select th:field="${film.director}" class="ui search dropdown"><!-- TODO utiliser l'attribut #"name"# au lieu de "surname" et "givenname"-->
                 <option
                         th:each="person: ${persons}"
                         th:text="${person.givenname}+' '+${person.surname}"
@@ -102,6 +158,7 @@
     </div>
     <div class="field">
         <label>Genres</label>
+        <!--<select class="ui fluid dropdown" multiple="" th:field="*{genres}" th:onchange="'onChangeGenre('+${film.id}+')'"> //Modèle JOEL-->
         <select class="ui fluid dropdown" multiple="" th:field="*{genres}">
             <option
                     th:each="genre: ${genresFilm}"
@@ -116,7 +173,7 @@
         <label>Résumé</label>
         <textarea form="film-form" rows="5" th:field="*{summary}"></textarea>
     </div>
-    <input class="ui button" type="submit" value="Valider">
+    <input class="ui green button" type="submit" value="Valider">
 </form>
 
 <h2 class="ui dividing header">Casting</h2>
@@ -133,7 +190,7 @@
     <div class="four fields">
         <div class="five wide field">
             <label>Acteur</label>
-            <select name="actor" th:value="*{actor.id}" class="ui search dropdown">
+            <select name="actor" th:value="*{actor.id}" class="ui search dropdown"><!-- TODO utiliser l'attribut #"name"# au lieu de "surname" et "givenname"-->
                 <option
                         th:each="person: ${persons}"
                         th:selected="${person.id == play.actor.id}"
@@ -219,6 +276,8 @@
 <script type="application/javascript">
     $('#menu-films').addClass("active");
     $('.ui.dropdown').dropdown();
+    //Cf. modale JOEL
+    //$('#supp').modal('hide'); /*#"nom" de la modale# en question*/
     $(document).ready(function () {
         tinymce.init({
             selector: '#summary'

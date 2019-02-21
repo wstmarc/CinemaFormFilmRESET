@@ -1,15 +1,13 @@
 package fr.laerce.cinema.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.checkerframework.common.aliasing.qual.Unique;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -30,23 +28,34 @@ public class Genre {
      * Le nom du genre
      */
     @Basic
-    @Unique
-    @NotBlank
-    @NotNull
-    @Size.List({/* Contraintes */
-        @Size(min = 3, message = "\"Name is 'too short'.\""),
-        @Size(max = 30, message = "\"Name is 'TOO LONG'.\"")
-    })
+    //@Unique
+    //@NotBlank
+    //@NotNull
+    //@Size.List({/* Contraintes */
+    //    @Size(min = 3, message = "\"Name is 'too short'.\""),
+    //    @Size(max = 30, message = "\"Name is 'TOO LONG'.\"")
+    //})
 //    @Size(min=5, max=15, message="Le nom doit faire entre \\{{min}\\} et \\{{max}\\} caractères")//////////
     @Column(name = "name", nullable = false, length = 30)
     private String name;
+
+    @Basic                                          //#
+    @Column(name = "idtmdb")                        //#
+    private Long idtmdb;                      //#
+
+    public Long getIdtmdb() {                 //#
+        return idtmdb;                              //#
+    }
+
+    public void setIdtmdb(Long idtmdb) {      //#
+        this.idtmdb = idtmdb;                       //#
+    }                                               //#
 
     /**
      * L'ensemble des films associés au genre
      */
     @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
     @JsonIgnore
-//    @JsonManagedReference
     private Set<Film> films;
 
 
@@ -75,7 +84,32 @@ public class Genre {
         this.films = films;
     }
 
+
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Genre)) return false;
+        Genre genre = (Genre) o;
+        return Objects.equals(getId(), genre.getId()) &&
+                Objects.equals(getName(), genre.getName()) &&
+                Objects.equals(getIdtmdb(), genre.getIdtmdb());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getIdtmdb());
+    }
+
+    @Override
+    public String toString() {
+        return "Genre{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", idtmdb=" + idtmdb +
+                '}';
+    }
+
+/*    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -93,5 +127,5 @@ public class Genre {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
-    }
+    }*/
 }

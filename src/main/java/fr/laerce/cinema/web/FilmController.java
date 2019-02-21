@@ -1,9 +1,6 @@
 package fr.laerce.cinema.web;
 
-import fr.laerce.cinema.dao.FilmDao;
-import fr.laerce.cinema.dao.GenreDao;
-import fr.laerce.cinema.dao.PersonDao;
-import fr.laerce.cinema.dao.RoleDao;
+import fr.laerce.cinema.dao.*;
 import fr.laerce.cinema.model.Film;
 import fr.laerce.cinema.model.Play;
 import fr.laerce.cinema.service.*;
@@ -17,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class FilmController {
 
 
+    @Autowired                                  //#
+    TmdbClient tmdbClient;                      //#
+
     @Autowired
     FilmManager filmManager;
 
@@ -27,7 +27,13 @@ public class FilmController {
     GenreManager genreManager;
 
     @Autowired
-    TmdbFilmManager tmdbFilmManager;//
+    TmdbFilmDao tmdbFilmDao;
+
+    @Autowired
+    TmdbFilmManager tmdbFilmManager;// //# Wuuuut ?
+    /*@Autowired   //équivalent                               //#
+    ImportFilmsFromTMDB importFilmsFromTMDB;    //#*/
+
 
     @Autowired
     ImageManager imm;
@@ -54,8 +60,8 @@ public class FilmController {
 
     @GetMapping("/add")
     public String add(Model model) {
-        Film film = new Film();
         model.addAttribute("title", "Ajout d'un film");
+        Film film = new Film();
         model.addAttribute("persons", personManager.getAll());
         model.addAttribute("genresFilm", genreManager.getAll());
         model.addAttribute("plays", film.getRoles());
@@ -63,6 +69,12 @@ public class FilmController {
         model.addAttribute("film", new Film());
         return "film/form";
     }
+
+    @GetMapping("/delete/{id}")                             //#
+    public String delete(@PathVariable("id") long id) {     //#
+        filmManager.delete(id);                             //#
+        return "film/delete";                               //#
+    }                                                       //#
 
     @GetMapping("/mod/{id}")
     public String mod(@PathVariable("id") long id, Model model) {
@@ -75,7 +87,6 @@ public class FilmController {
         model.addAttribute("newrole", new Play());
         return "film/form";
     }
-
 
     @PostMapping("/add")
     public String submit(@ModelAttribute Film film) {
@@ -101,6 +112,4 @@ public class FilmController {
         filmManager.saveRole(role);
         return "redirect:/film/mod/" + role.getFilm().getId();
     }
-
-
 }

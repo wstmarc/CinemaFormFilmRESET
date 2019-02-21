@@ -21,6 +21,10 @@ public class FilmManager {
         return filmDao.findById(id).get();
     }
 
+    public boolean existsByIdtmdb(long id){   //#
+        return filmDao.existsByIdtmdb(id);          //#
+    }                                               //#
+
     public List<Film> getAll(){
         return filmDao.findAllByOrderByTitle();
     }
@@ -34,6 +38,11 @@ public class FilmManager {
         filmDao.save(film);
         return film.getId();
     }
+
+    public Film saveFilm(Film f)        //#
+    {                                   //#
+        return filmDao.save(f);         //#
+    }                                   //#
 
 /*    *//**
      * Supprime un genre de la base si et seulement si il existe et n'est lié à aucun film
@@ -82,4 +91,13 @@ public class FilmManager {
         roleDao.save(play);
         return play.getId();
     }
+
+    public Film delete(long id){        //#
+        Film film = getById(id);        //#
+        filmDao.deleteById(id);         //#
+        return film;                    //#
+    }                                   //#
+    public Film findByIdTmdb(long id){    //#
+        return filmDao.findByIdtmdb(id);        //#
+    }                                           //#
 }

@@ -15,4 +15,15 @@ public class PersonManager {
     public List<Person> getAll(){
         return personDao.findAllByOrderBySurname();
     }
+
+    public boolean existsByIdtmdb(long id){   //#
+        return personDao.existsByIdtmdb(id);        //#
+    }                                               //#
+    public Person savePerson(Person p)              //#
+    {                                               //#
+        return personDao.save(p);                   //#
+    }                                               //#
+    public Person findByIdTmdb(long id){      //#
+        return personDao.findByIdtmdb(id);          //#
+    }                                               //#
 }
