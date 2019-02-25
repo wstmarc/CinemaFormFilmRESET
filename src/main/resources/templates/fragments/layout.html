@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--<title>Layout Title</title>-->
     <div th:fragment="header-css" th:remove="tag">
-        <title th:text="${title}">Title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--<title th:text="${title}">Title</title>--><!-- thymeleaf -->
+        <!--<title th:text="#{site.title}" ></title>--><!-- i18n -->
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="mobile-web-app-capable" content="yes">
@@ -17,7 +17,7 @@
 <div th:fragment="header-page">
     <div class="ui top attached text menu">
         <div class="header item">
-            <strong>Mon cinéma</strong>
+            <strong>Cinéma Méliès</strong>
         </div>
         <a class="item" id="menu-films" href="#" th:href="@{/film/list}">Films</a>
         <a class="item" id="menu-persons" href="#" th:href="@{/person/list}">Personnes</a>

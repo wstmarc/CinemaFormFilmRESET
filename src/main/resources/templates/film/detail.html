@@ -1,17 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="${film.title}">Un film</title>
-    <div th:replace="fragments/layout :: header-css">
-
-    </div>
+    <div th:replace="fragments/layout :: header-css"></div>
+    <title th:text="${film.title}">Nom d'un film</title><!-- dans l'onglet on voit le TITRE DU FILM sélectionné -->
 </head>
 <body>
+<h1 th:for="#{title.movie.detail}" th:text="#{title.movie.detail}"></h1><!-- TITRE PAGE internationnalisé -->
 
-<div th:include="fragments/layout :: header-page">
-</div>
-
+<div th:include="fragments/layout :: header-page"></div><!-- menu de navigation -->
 
 <div class="ui container padded grid">
     <div class="two column row">

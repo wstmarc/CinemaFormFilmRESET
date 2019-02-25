@@ -52,7 +52,7 @@ public class InternationalizationConfig extends WebMvcConfigurerAdapter {
 // stores locale info in the session
         SessionLocaleResolver resolver = new SessionLocaleResolver();
 //default to US locale
-        resolver.setDefaultLocale(Locale.US);
+        resolver.setDefaultLocale(Locale.FRENCH);
         return resolver;
     }
 

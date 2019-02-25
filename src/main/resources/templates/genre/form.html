@@ -213,13 +213,14 @@
 </html>-->
 
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Gestion des genres</title>
+    <!--<title>Gestion des genres</title>-->
     <div th:replace="fragments/layout :: header-css"></div>
+    <title th:for="#{title.gender.list}" th:text="#{title.gender.list}"></title><!-- TITRE PAGE internationnalisé -->
 </head>
 <body>
+<h1 th:for="#{title.gender.list}" th:text="#{title.gender.list}"></h1><!-- TITRE PAGE internationnalisé -->
 <div th:include="fragments/layout :: header-page"></div>
 
 <!-- Modale pour l'ajout, modification, suppression d'un genre -->
