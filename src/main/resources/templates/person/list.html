@@ -2,9 +2,11 @@
 <html lang="en"
 xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title th:for="#{title.person.list}" th:text="#{title.person.list}"></title><!-- TITRE PAGE internationnalisé -->
     <div th:replace="fragments/layout :: header-css"></div>
 </head>
 <body>
+<h1 th:for="#{title.person.list}" th:text="#{title.person.list}"></h1><!-- TITRE PAGE internationnalisé -->
 <div th:include="fragments/layout :: header-page"></div>
 <table>
     <tr th:each="person: ${persons}">
