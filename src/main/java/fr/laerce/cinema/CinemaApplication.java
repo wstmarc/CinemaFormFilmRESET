@@ -30,7 +30,7 @@ public class CinemaApplication {
   /* @Bean
 
     public CommandLineRunner runner(FilmDao dao){
-        return new CommandLineRunner() {
+        return _new CommandLineRunner() {
             @Override
             @Transactional
             public void run(String... args) throws Exception {
@@ -50,13 +50,13 @@ public class CinemaApplication {
     }*/
 
     //@Bean
-    public CommandLineRunner runner(TmdbClient tc){
+/*    public CommandLineRunner runner(TmdbClient tc){
         return args -> {
 //            tc.getMovieByTmdbId(616);
             tc.getMovieByTmdbId(616);
             //System.out.println("Là: "+tc.toString());
         };
-    }
+    }*/
 
 }
 

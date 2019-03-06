@@ -2,7 +2,6 @@ package fr.laerce.cinema.api;
 
 import fr.laerce.cinema.model.Genre;
 import fr.laerce.cinema.service.GenreManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,10 +50,10 @@ public class GenreRestController {
      */
     @PostMapping("")
     public Genre add(@RequestBody Genre genre){
-        if (genre.getName().isEmpty()) throw new IllegalArgumentException("Name is empty.");
+        if (genre.getName().isEmpty()) throw new IllegalArgumentException("Le nom est vide!!!");
 //Géré avec les annotations !!!! @Size
-        /*        if (genre.getName().length() < 3) throw new IllegalArgumentException("Name is 'too short'");
-        if (genre.getName().length() > 30) throw new IllegalArgumentException("Name is 'TOO LONG'");*/
+        if (genre.getName().length() <= 2) throw new IllegalArgumentException("La longueur du nom est trop courte, minimum 2!!!");
+        if (genre.getName().length() > 30) throw new IllegalArgumentException("La longueur du nom est trop longue, maximum 30!!!");
         return genreManager.save(genre);
     }
 

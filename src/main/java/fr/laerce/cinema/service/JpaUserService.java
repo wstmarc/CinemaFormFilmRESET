@@ -2,6 +2,7 @@ package fr.laerce.cinema.service;
 
 import fr.laerce.cinema.dao.GroupDao;
 import fr.laerce.cinema.dao.UserDao;
+import fr.laerce.cinema.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,17 +39,17 @@ public class JpaUserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public void save(fr.laerce.cinema.model.User user){
+    public void save(User user){
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setGroups(new HashSet<>(groupDao.findAll()));
         userDao.save(user);
     }
 
-    public fr.laerce.cinema.model.User findByUserName(String userName){
+    public User findByUserName(String userName){
         return userDao.findByName(userName);
     }
 
-    public fr.laerce.cinema.model.User findById(Long id){return userDao.findOne(id);}
+    public User findById(Long id){return userDao.findById(id).get();}
 
-    public List<fr.laerce.cinema.model.User> list(){return userDao.findAll();}
+    public List<User> list(){return userDao.findAll();}
 }

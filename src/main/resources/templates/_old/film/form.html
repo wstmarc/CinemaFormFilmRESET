@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <h1 th:for="#{title.movie.form}" th:text="#{title.movie.form}"></h1><!-- TITRE PAGE internationnalisé -->
+    <!--<title th:text="${title}">Title</title>-->
+    <div th:replace="fragments/layout :: header-css"></div>
+</head>
+<body>
+<h1 th:for="#{title.movie.form}" th:text="#{title.movie.form}"></h1><!-- TITRE PAGE internationnalisé -->
+<div th:include="fragments/layout :: header-page"></div><!-- MENU NAVIGATION -->
+
+<!--MODALES MOULAFRITA-->
+<!--SEMANTIC UI-->
+<div id="modalUI" class="ui modal">
+    <div class="ui container padded">
+        <div class="Header">
+            <h3>Film</h3>
+        </div>
+        <div class="ui padded form">
+            <input type="hidden" name="id" id="id-genre">
+            <div class="fourteen wide field">
+                <input type="text" name="name" id="name-genre">
+            </div>
+            <div class="actions">
+                <div class="circular ui green icon button" onclick="addGenre()" id="add-button">
+                    <i class="white plus icon"></i>
+                </div>
+                <div class="circular ui green icon button" onclick="updateGenre()" id="mod-button">
+                    <i class="white check icon icon"></i>
+                </div>
+                <!--<div class="circular ui icon red button" onclick="eraseGenre()" id="del-button">-->
+                <div class="circular ui icon red button" onclick="openConfirmDialog()" id="del-button">
+                    <i class="white minus icon"></i>
+                </div>
+                <div class="circular ui icon blue button" onclick="exitDialog()" id="exit-button">
+                    <i class="white close icon icon"></i>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TODO : Modale pour la DEMANDE DE CONFIRMATION DE SUPPRESSION d'un film -->
+<div id="modalConfirmSuppr" class="green ui mini modal">
+    <div class="ui red header">ATTENTION</div>
+    <div class="content">
+        <p  class="ui header">Voulez-vous confirmer la suppression ?</p>
+    </div>
+    <div class="actions">
+        <!--<div class="ui approve labeled icon button" onclick="eraseGenre()">Oh oui<i class="checkmark green icon"></i></div>-->
+        <div class="ui green approve right labeled icon button" onclick="eraseGenre()">Oh oui<i class="checkmark icon"></i></div>
+        <!--<div class="ui button">Fuck, pas besoin de ce bouton!</div>-->
+        <div class="ui red cancel right labeled icon button" onclick="exitDialog()">Non pitié<i class="close icon"></i></div>
+    </div>
+</div>
+
+<!-- TODO : Modale pour AFFICHER UN MESSAGE D'ERREUR -->
+<div id="modalErrorMessage" class="ui negative message modal">
+    <i class="close labeled right icon" onclick="exitDialog()"></i>
+    <div id="messageErr" class="header">
+        Ici devrait s'afficher le message d'erreur dynamiquement
+    </div>
+</div>
+<!--FIN MODALES MOULA FRITA-->
+
+<!--MODALES JOEL-->
+<!--verification de suppression-->
+<!--<div  id="supp" class="ui modal">
+    <div class="ui red header">Attention! </div>
+    <div class="content">
+        <p>Êtes-vous sûr de vouloir supprimer ce genre   </p>
+    </div>
+    &lt;!&ndash;<div class="actions">&ndash;&gt;
+    &lt;!&ndash;<div class="ui positive right labeled icon button" onclick="eraseGenre()" >oui<i class="checkmark icon"></i></div>&ndash;&gt;
+    &lt;!&ndash;<div class="ui negative right labeled icon button" >Non<i class="close icon"></i></div>&ndash;&gt;
+    &lt;!&ndash;&lt;!&ndash;<div class="ui minus button" onclick="exitDialog()">Cancel</div>&ndash;&gt;&ndash;&gt;
+    &lt;!&ndash;</div>&ndash;&gt;
+    <div class="actions">
+        &lt;!&ndash;<div class="ui approve labeled icon button" onclick="eraseGenre()">Oh oui<i class="checkmark green icon"></i></div>&ndash;&gt;
+        <div class="ui green approve right labeled icon button" onclick="eraseGenre()">oui<i class="checkmark icon"></i></div>
+        &lt;!&ndash;<div class="ui button">Fuck, pas besoin de ce bouton!</div>&ndash;&gt;
+        <div class="ui red cancel right labeled icon button" onclick="exitDialog()">Non<i class="close icon"></i></div>
+    </div>
+</div>
+
+<form action="#" class="ui form" method="post" th:action="@{/film/addrole}" th:object="${newrole}">
+    <input id="film" name="film" th:value="${film.id}" type="hidden">
+    <div class="four fields">
+        <div class="five wide field">
+            <label>Acteur</label>
+            <select name="actor" class="ui search dropdown">
+                <option value="" selected disabled>Choisissez un acteur</option>
+                <option
+                        th:each="person: ${persons}"
+                        th:text="${person.givenname}+' '+${person.surname}"
+                        th:value="${person.id}">
+                    Prénom Nom
+                </option>
+            </select>
+        </div>
+        <div class="six wide field">
+            <label>Rôle</label>
+            <input name="name" th:value="*{name}" type="text">
+        </div>
+        <div class="two wide field">
+            <label>Rang</label>
+            <input name="rank" th:value="*{rank}" type="number">
+        </div>
+
+
+        <div class="three wide field">
+            <label>&nbsp;</label>
+            <button type="submit" class="circular ui green icon button ">
+                <i class="white plus icon"></i>
+            </button>&lt;!&ndash;xxxx&ndash;&gt;
+        </div>
+    </div>
+</form>-->
+
+
+<h2 class="ui dividing">Fiche signalétique</h2>
+<form
+        action="#"
+        class="ui form"
+        id="film-form"
+        method="post"
+        th:action="@{/film/add}"
+        th:object="${film}"
+>
+    <input th:field="${film.id}" type="hidden">
+    <input th:field="${film.imagePath}" type="hidden">
+    <div class="field">
+        <label>Titre</label>
+        <input th:field="${film.title}" type="text">
+    </div>
+    <div class="three fields">
+        <div class="two wide field">
+            <label>Notation</label>
+            <input th:field="*{rating}" type="number">
+        </div>
+        <div class="four wide field">
+            <label>Date de sortie</label>
+            <input th:field="*{releaseDate}" type="date">
+        </div>
+        <div class="ten wide field">
+            <label>Réalisateur</label>
+            <select th:field="${film.director}" class="ui search dropdown"><!-- TODO utiliser l'attribut #"name"# au lieu de "surname" et "givenname"-->
+                <!--th:text="${person.givenname}+' '+${person.surname}"-->
+                <option
+                        th:each="person: ${persons}"
+                        th:text="${person.place_of_birth}+' '+${person.surname}"
+                        th:value="${person.id}">
+                    Prénom Nom
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="field">
+        <label>Genres</label>
+        <!--<select class="ui fluid dropdown" multiple="" th:field="*{genres}" th:onchange="'onChangeGenre('+${film.id}+')'"> //Modèle JOEL-->
+        <select class="ui fluid dropdown" multiple="" th:field="*{genres}" th:onchange="'onChangeGenre('+${film.id}+')'">
+            <option
+                    th:each="genre: ${genresFilm}"
+                    th:text="${genre.name}"
+                    th:value="${genre.id}"
+            >
+                Drame
+            </option>
+        </select>
+    </div>
+    <div class="field">
+        <label>Résumé</label>
+        <textarea form="film-form" rows="5" th:field="*{summary}"></textarea>
+    </div>
+    <input class="ui green button" type="submit" value="Valider">
+</form>
+
+<h2 class="ui dividing header">Casting</h2>
+<!--th:action="@{'/film/modrole/'+${play.id}}"-->
+<!--th:object="${play}"-->
+<form class="ui form"
+      method="post"
+      th:action="@{/film/addrole}"
+      th:each="play: ${film.roles}"
+      th:object="${newrole}">
+    <input id="film" name="film" th:value="${film.id}" type="hidden">
+
+    <div class="four fields">
+        <div class="five wide field">
+            <label>Acteur</label>
+            <!--th:value="*{actor.id}"-->
+            <select name="actor" class="ui search dropdown"><!-- TODO utiliser l'attribut #"name"# au lieu de "surname" et "givenname"-->
+                <!--th:text="${person.givenname}+' '+${person.surname}"-->
+                <!--th:selected="${person.id == play.actor.id}"-->
+                <option value="" selected disabled>Choisissez un acteur</option>
+                <option
+                        th:each="person: ${persons}"
+                        th:text="${person.place_of_birth}+' '+${person.surname}"
+                        th:value="${person.id}">
+                    Prénom Nom
+                </option>
+            </select>
+        </div>
+        <div class="six wide field">
+            <label>Rôle</label>
+            <input name="name" th:value="*{name}" type="text">
+        </div>
+        <div class="two wide field">
+            <label>Rang</label>
+            <input name="rank" th:value="*{rank}" type="number">
+        </div>
+
+
+        <div class="three wide field">
+            <label>&nbsp;</label>
+            <button type="submit" class="circular ui green icon button">
+                <i class="white check icon icon"></i>
+            </button>
+
+            <a href="#" th:href="@{'/film/rmrole/'+ *{id}}" class="circular ui icon red button">
+                <i class="white close icon icon"></i>
+            </a>
+        </div>
+    </div>
+</form>
+
+<!--<form
+        action="#"
+        class="ui form"
+        method="post"
+        th:action="@{/film/addrole}"
+        th:object="${newrole}"
+>
+    <input id="film" name="film" th:value="${film.id}" type="hidden">
+    <div class="four fields">
+        <div class="five wide field">
+            <label>Acteur</label>
+            <select name="actor" class="ui search dropdown">
+                <option value="" selected disabled>Choisissez un acteur</option>
+                <option
+                        th:each="person: ${persons}"
+                        th:text="${person.givenname}+' '+${person.surname}"
+                        th:value="${person.id}"
+
+                >
+                    Prénom Nom
+                </option>
+            </select>
+        </div>
+        <div class="six wide field">
+            <label>Rôle</label>
+            <input name="name" th:value="*{name}" type="text">
+        </div>
+        <div class="two wide field">
+            <label>Rang</label>
+            <input name="rank" th:value="*{rank}" type="number">
+        </div>
+
+
+        <div class="three wide field">
+            <label>&nbsp;</label>
+            <button type="submit" class="circular ui green icon button ">
+                <i class="white plus icon"></i>
+            </button>
+        </div>
+    </div>
+</form>-->
+
+<div th:include="fragments/layout :: footer-js"></div>
+
+<script type="application/javascript">
+    $('#menu-films').addClass("active");
+    $('.ui.dropdown').dropdown();
+    //Cf. modale JOEL
+    //$('#supp').modal('hide'); /*#"nom" de la modale# en question*/
+    $(document).ready(function () {
+        tinymce.init({
+            selector: '#summary'
+        });
+    })
+
+    function onChangeGenre(idFilm) {
+        alert("changeGenre\n pour le film " + idFilm + "\n et les genres : " + $("#genres").val());
+    }
+
+</script>
+</body>
+</html>

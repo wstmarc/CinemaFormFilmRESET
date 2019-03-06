@@ -68,5 +68,4 @@ public class PersonController {
         personneDao.save(person);
         return "redirect:/person/list";
     }
-
 }

@@ -14,8 +14,13 @@ import org.springframework.web.bind.annotation.*;
 public class FilmController {
 
 
-    @Autowired                                  //#
-    TmdbClient tmdbClient;                      //#
+    @Autowired
+    TmdbClient tmdbClient;
+
+    /*    @Autowired
+    TmdbFilmManager tmdbFilmManager;*/
+    @Autowired   //équivalent
+    ImportFilmsFromTMDB importFilmsFromTMDB;
 
     @Autowired
     FilmManager filmManager;
@@ -30,20 +35,19 @@ public class FilmController {
     TmdbFilmDao tmdbFilmDao;
 
     @Autowired
-    TmdbFilmManager tmdbFilmManager;// //# Wuuuut ?
-    /*@Autowired   //équivalent                               //#
-    ImportFilmsFromTMDB importFilmsFromTMDB;    //#*/
+    RoleDao roleDao;//#
 
 
     @Autowired
     ImageManager imm;
 
-
-    @GetMapping("/tmdbfilms")
-    public String tmdbdetail(){
-        tmdbFilmManager.importMovies();
-        return "index";
-    }
+/* # */
+//    @GetMapping("/tmdbfilms")
+//    public String tmdbdetail(){
+//        tmdbFilmManager.importMovies();
+//        return "index";
+//    }
+/* # */
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -51,10 +55,18 @@ public class FilmController {
         model.addAttribute("films", films);
         return "film/list";
     }
+    //    @GetMapping("/tmdb/{idtmdb}")
+//    public String tmdbfilm(@PathVariable("idtmdb")BigInteger idtmdb, RedirectAttributes redirectAttrs) throws Exception {
+//    tmdbClient.getMovieByTmdbId(idtmdb);
+//    redirectAttrs.addAttribute("message","film ajouter !!!");
+//    long id = filmManager.findByIdTmdb(idtmdb).getId();
+//    return "redirect:/film/detail/"+id;
+//    }
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") long id, Model model) {
         model.addAttribute("film", filmManager.getById(id));
+        model.addAttribute("roles", roleDao.findByFilm_IdOrderByRankAsc(id)); //#
         return "film/detail";
     }
 
@@ -62,19 +74,19 @@ public class FilmController {
     public String add(Model model) {
         model.addAttribute("title", "Ajout d'un film");
         Film film = new Film();
+        model.addAttribute("film", film);//#
         model.addAttribute("persons", personManager.getAll());
         model.addAttribute("genresFilm", genreManager.getAll());
         model.addAttribute("plays", film.getRoles());
         model.addAttribute("newrole", new Play());
-        model.addAttribute("film", new Film());
         return "film/form";
     }
 
-    @GetMapping("/delete/{id}")                             //#
-    public String delete(@PathVariable("id") long id) {     //#
-        filmManager.delete(id);                             //#
-        return "film/delete";                               //#
-    }                                                       //#
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") long id) {
+        filmManager.delete(id);
+        return "film/delete";
+    }
 
     @GetMapping("/mod/{id}")
     public String mod(@PathVariable("id") long id, Model model) {

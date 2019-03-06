@@ -4,7 +4,6 @@ import fr.laerce.cinema.dao.GenreDao;
 import fr.laerce.cinema.model.Genre;
 import org.springframework.stereotype.Component;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 /**
@@ -21,7 +20,6 @@ public class GenreManager {
 
     /**
      * Constructeur utilisé par Spring pour la construction du bean
-     *
      * @param genreDao le DAO qui gère le genre dans le système de persistance, ne peut être null
      */
     public GenreManager(GenreDao genreDao) {
@@ -31,7 +29,6 @@ public class GenreManager {
 
     /**
      * Obtnir la liste de tous les genres dans la base
-     *
      * @return la liste des genres
      */
     public List<Genre> getAll() {
@@ -57,14 +54,14 @@ public class GenreManager {
      */
     public Genre save(Genre genre) {
 /*        if (genreDao.findByName(genre.getName()) != null) {   //#
-            throw new IllegalArgumentException("Le genre \"" + genre.getName() + "\" existe déjà."); //#
+            throw _new IllegalArgumentException("Le genre \"" + genre.getName() + "\" existe déjà."); //#
         }*/ //#
         return genreDao.save(genre);
 
 /*        try {
         genre = genreDao.save(genre);
     } catch(ConstraintViolationException cve) {
-        throw new IllegalArgumentException("Le genre" + genre.getName() + " existe déjà");
+        throw _new IllegalArgumentException("Le genre" + genre.getName() + " existe déjà");
     }
         return genreDao.save(genre);*/
     }
@@ -83,11 +80,11 @@ public class GenreManager {
         genreDao.deleteById(inbase.getId());
         return inbase;
     }
-    public Genre findByIdTmdb(long id){   //#
-        return genreDao.findByIdtmdb(id);       //#
-    }                                           //#
+    public Genre findByIdTmdb(long id){
+        return genreDao.findByIdtmdb(id);
+    }
 
-    public boolean existsByIdtmdb(long id){   //#
-        return genreDao.existsByIdtmdb(id);         //#
-    }                                               //#
+    public boolean existsByIdtmdb(long id){
+        return genreDao.existsByIdtmdb(id);
+    }
 }

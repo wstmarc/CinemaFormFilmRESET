@@ -16,8 +16,8 @@ public class Play {
     @Basic
     @Column(name = "rank", nullable = false)
     private int rank;
+    //@Column(name = "name", nullable = false, length = 90)
     @Basic
-//    @Column(name = "name", nullable = false, length = 90)
     @Column(name = "name", nullable = false)//#
     private String name;
     @ManyToOne

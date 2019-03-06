@@ -27,7 +27,7 @@ public class Genre {
     /**
      * Le nom du genre
      */
-    @Basic
+    //Exemples annotations contraintes
     //@Unique
     //@NotBlank
     //@NotNull
@@ -35,21 +35,22 @@ public class Genre {
     //    @Size(min = 3, message = "\"Name is 'too short'.\""),
     //    @Size(max = 30, message = "\"Name is 'TOO LONG'.\"")
     //})
-//    @Size(min=5, max=15, message="Le nom doit faire entre \\{{min}\\} et \\{{max}\\} caractères")//////////
+    //    @Size(min=5, max=15, message="Le nom doit faire entre \\{{min}\\} et \\{{max}\\} caractères")//////////
+    @Basic
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 
-    @Basic                                          //#
-    @Column(name = "idtmdb")                        //#
-    private Long idtmdb;                      //#
+    @Basic
+    @Column(name = "idtmdb")
+    private Long idtmdb;                      //Biggy#
 
-    public Long getIdtmdb() {                 //#
-        return idtmdb;                              //#
+    public Long getIdtmdb() {                 //Biggy#
+        return idtmdb;
     }
 
-    public void setIdtmdb(Long idtmdb) {      //#
-        this.idtmdb = idtmdb;                       //#
-    }                                               //#
+    public void setIdtmdb(Long idtmdb) {      //Biggy#
+        this.idtmdb = idtmdb;
+    }
 
     /**
      * L'ensemble des films associés au genre
@@ -108,24 +109,4 @@ public class Genre {
                 ", idtmdb=" + idtmdb +
                 '}';
     }
-
-/*    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Genre genre = (Genre) o;
-
-        if (id != genre.id) return false;
-        if (name != null ? !name.equals(genre.name) : genre.name != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
-    }*/
 }

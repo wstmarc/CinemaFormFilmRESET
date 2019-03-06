@@ -18,11 +18,22 @@ public class Film {
     @Column(name = "id", nullable = false)
     private long id;
     @Basic
-    @Column(name = "title", nullable = true, length = 150)
+    @Column(name = "title", nullable = true, length = 200)
     private String title;
     @Basic
     @Column(name = "rating", nullable = true, precision = 1)
     private double rating;
+
+    public double getVoteAverage() {
+        return voteAverage;
+    }
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+    @Basic
+    @Column(name = "vote_utilisateur", nullable = true, precision = 1)
+    private double voteAverage;
+
     @Basic
     @Column(name = "image_path", nullable = true, length = 120)
     private String imagePath;
@@ -33,26 +44,27 @@ public class Film {
     @Column(name="release_date", nullable = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
-    @Basic                          //#
-    @Column(name = "idtmdb", nullable = true)        //#
-    private Long idtmdb;      //#
+    //@Column(name = "idtmdb", nullable = true)        //#
+    @Basic
+    @Column(name = "idtmdb")
+    private Long idtmdb;      //Biggy#
+    //@JsonIgnore         //#
+    //@JoinColumn(name ="film_director", nullable = true)//#
     @ManyToOne
-    @JoinColumn(name ="film_director", nullable = true)
-    @JsonIgnore         //#
-    //@JsonManagedReference //#
+    @JoinColumn(name ="film_director")
+    @JsonManagedReference //#
     private Person director;
 
-
+    //@JsonIgnore     //#
     @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = false)
-    //@JsonBackReference
-    @JsonIgnore     //#
+    @JsonBackReference
     private Set<Play> roles;
 
 
+    //@JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name="film_genre", joinColumns = @JoinColumn(name="film_id"),
     inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    //@JsonManagedReference
     @JsonIgnore
     private Set<Genre> genres;
 
@@ -144,39 +156,13 @@ public class Film {
         this.reviews = reviews;
     }
 
-    public Long getIdtmdb() {                 //#
-        return idtmdb;                              //#
-    }                                               //#
-
-    public void setIdtmdb(Long idtmdb) {      //#
-        this.idtmdb = idtmdb;                       //#
-    }                                               //#
-
-/*    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Film film = (Film) o;
-
-        if (id != film.id) return false;
-        if (title != null ? !title.equals(film.title) : film.title != null) return false;
-        if (rating != film.rating ) return false;
-        if (imagePath != null ? !imagePath.equals(film.imagePath) : film.imagePath != null) return false;
-        if (summary != null ? !summary.equals(film.summary) : film.summary != null) return false;
-
-        return true;
+    public Long getIdtmdb() {                 //Biggy#
+        return idtmdb;
     }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + ( new Double(rating).hashCode());
-        result = 31 * result + (imagePath != null ? imagePath.hashCode() : 0);
-        result = 31 * result + (summary != null ? summary.hashCode() : 0);
-        return result;
-    }*/
+    public void setIdtmdb(Long idtmdb) {      //Biggy#
+        this.idtmdb = idtmdb;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -185,6 +171,7 @@ public class Film {
         Film film = (Film) o;
         return getId() == film.getId() &&
                 Double.compare(film.getRating(), getRating()) == 0 &&
+                Double.compare(film.getVoteAverage(), getVoteAverage()) == 0 &&//#
                 Objects.equals(getTitle(), film.getTitle()) &&
                 Objects.equals(getImagePath(), film.getImagePath()) &&
                 Objects.equals(getSummary(), film.getSummary()) &&
@@ -194,6 +181,6 @@ public class Film {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle(), getRating(), getImagePath(), getSummary(), getReleaseDate(), getIdtmdb());
+        return Objects.hash(getId(), getTitle(), getRating(), getVoteAverage()/*#*/, getImagePath(), getSummary(), getReleaseDate(), getIdtmdb());
     }
 }

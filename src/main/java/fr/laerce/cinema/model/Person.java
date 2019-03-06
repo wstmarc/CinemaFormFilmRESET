@@ -1,6 +1,5 @@
 package fr.laerce.cinema.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,11 +16,14 @@ public class Person {
     @Column(name = "id", nullable = false)
     private long id;
     @Basic
-    @Column(name = "surname", nullable = false, length = 60)
+    @Column(name = "surname", nullable = true, length = 60)
     private String surname;
-    @Basic
+/*    @Basic
     @Column(name = "givenname", nullable = true, length = 40)
-    private String givenname;
+    private String givenname;*/
+    @Basic
+    @Column(name = "place_of_birth", nullable = true, length = 40)
+    private String place_of_birth;//bdd joel
 
     @Basic
     @Column(name = "birthday", nullable = true)
@@ -32,22 +34,22 @@ public class Person {
     @Column(name = "image_path", nullable = true, length = 80)
     private String imagePath;
 
-    @Basic                                                  //#
-    @Column(name = "name", nullable = true, length = 100)   //#
-    private String name;                                    //#
-    @Basic                                                  //#
-    @Column(name = "idtmdb")                                //#
-    private Long idtmdb;                              //#
+    @Basic
+    @Column(name = "name", nullable = true, length = 100)
+    private String name;
+    @Basic
+    @Column(name = "idtmdb")
+    private Long idtmdb;                              //Biggy#
 
+    //@JsonBackReference
     @OneToMany(mappedBy = "director")
-//    @JsonBackReference
     @JsonIgnore
     private Set<Film> directedFilms;
 
-//    @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonBackReference
     @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL)
     @JsonIgnore
-    //@JsonBackReference
     private Set<Play> roles;
 
     public long getId() {
@@ -66,13 +68,20 @@ public class Person {
         this.surname = surname;
     }
 
-    public String getGivenname() {
+    /*public String getGivenname() {
         return givenname;
     }
 
     public void setGivenname(String givenname) {
         this.givenname = givenname;
-    }
+    }*/
+    public String getPlace_of_birth() {
+        return place_of_birth;
+    }//#
+
+    public void setPlace_of_birth(String place_of_birth) {
+        this.place_of_birth = place_of_birth;
+    }//#
 
    public LocalDate getBirthday() {
         return birthday;
@@ -99,80 +108,53 @@ public class Person {
     }
 
     public String getName() {               //#
-        return name;                        //#
-    }                                       //#
+        return name;
+    }
 
-    public void setName(String name) {      //#
-        this.name = name;                   //#
-    }                                       //#
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public Long getIdtmdb() {         //#
-        return idtmdb;                      //#
-    }                                       //#
+    public Long getIdtmdb() {               //Biggy#
+        return idtmdb;
+    }
 
-    public void setIdtmdb(Long idtmdb) {  //#
-        this.idtmdb = idtmdb;                   //#
-    }                                           //#
+    public void setIdtmdb(Long idtmdb) {    //Biggy#
+        this.idtmdb = idtmdb;
+    }
 
 
-    @Override                                                               //#
-    public boolean equals(Object o) {                                       //#
-        if (this == o) return true;                                         //#
-        if (!(o instanceof Person)) return false;                           //#
-        Person person = (Person) o;                                         //#
-        return getId() == person.getId() &&                                 //#
-                Objects.equals(getSurname(), person.getSurname()) &&        //#
-                Objects.equals(getGivenname(), person.getGivenname()) &&    //#
-                Objects.equals(getBirthday(), person.getBirthday()) &&      //#
-                Objects.equals(getImagePath(), person.getImagePath()) &&    //#
-                Objects.equals(getName(), person.getName()) &&              //#
-                Objects.equals(getIdtmdb(), person.getIdtmdb());            //#
-    }                                                                       //#
-
-    @Override                                                                                                                       //#
-    public int hashCode() {                                                                                                         //#
-        return Objects.hash(getId(), getSurname(), getGivenname(), getBirthday(), getImagePath(), getName(), getIdtmdb());          //#
-    }                                                                                                                               //#
-
-    @Override                                           //#
-    public String toString() {                          //#
-        return "Person{" +                              //#
-                "id=" + id +                            //#
-                ", surname='" + surname + '\'' +        //#
-                ", givenname='" + givenname + '\'' +    //#
-                ", birthday=" + birthday +              //#
-                ", imagePath='" + imagePath + '\'' +    //#
-                ", name='" + name + '\'' +              //#
-                ", idtmdb=" + idtmdb +                  //#
-                '}';                                    //#
-    }                                                   //#
-
-    /*@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Person persons = (Person) o;
-
-        if (id != persons.id) return false;
-
-        return true;
+        if (!(o instanceof Person)) return false;
+        Person person = (Person) o;
+        return getId() == person.getId() &&
+                Objects.equals(getSurname(), person.getSurname()) &&
+//                Objects.equals(getGivenname(), person.getGivenname()) &&
+                Objects.equals(getPlace_of_birth(), person.getPlace_of_birth()) &&//#
+                Objects.equals(getBirthday(), person.getBirthday()) &&
+                Objects.equals(getImagePath(), person.getImagePath()) &&
+                Objects.equals(getName(), person.getName()) &&
+                Objects.equals(getIdtmdb(), person.getIdtmdb());
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        return result;
+        return Objects.hash(getId(), getSurname(), /*getGivenname(),*/getPlace_of_birth()/*#*/, getBirthday(), getImagePath(), getName(), getIdtmdb());
     }
 
     @Override
     public String toString() {
         return "Person{" +
                 "id=" + id +
-                ", nom='" + surname + '\'' +
-                ", prenom='" + givenname + '\'' +
-                ", naissance=" + birthday +
-                ", photoPath='" + imagePath + '\'' +
+                ", surname='" + surname + '\'' +
+//                ", givenname='" + givenname + '\'' +
+                ", place_of_birth='" + place_of_birth + '\'' +//#
+                ", birthday=" + birthday +
+                ", imagePath='" + imagePath + '\'' +
+                ", name='" + name + '\'' +
+                ", idtmdb=" + idtmdb +
                 '}';
-    }*/
+    }
 }

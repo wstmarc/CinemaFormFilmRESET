@@ -53,6 +53,5 @@ public class ImageController {
             e.printStackTrace();
         }
         return image;
-
     }
 }

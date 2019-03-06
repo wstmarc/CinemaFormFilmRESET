@@ -42,5 +42,4 @@ public class GenreController {
         model.addAttribute("newgenre", new Genre());
         return "genre/form";
     }
-
 }

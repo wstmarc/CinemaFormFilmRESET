@@ -1,3 +1,4 @@
+/*
 package fr.laerce.cinema.service;
 
 import com.google.common.io.ByteStreams;
@@ -30,9 +31,8 @@ public class TmdbFilmManager {
     @Autowired  //#
     private TmdbFilmDao tmdbFilmDao;
 
-    /*  TODO: recréer une méthode qui prend en compte la connexion (authentification TMDB)*/
     //   !!!!!!!! AVEC AUTHENTIFICATION  !!!!!!!
-    @Value("${tmdb.api.key}") // <<--
+    @Value("${tmdb.api.key}") // <<-- //TODO vérifier la clé TMDB : tmdbfilmmanager
     private String apiKey;
 
     public TmdbFilmManager(TmdbFilmDao tmdbFilmDao){
@@ -55,31 +55,33 @@ public class TmdbFilmManager {
             //1 Téléchargement
             //2 Dézipper
             //3 Lire bloc par bloc le fichier
-            BufferedInputStream bis = new BufferedInputStream(//3 fichier temporaire (tampon de TMDB)
-                    new GZIPInputStream(//2 décompression du fichier gzip
-                            new URL(url).openStream()//1 ouverture du stream, en fonction de l'url
+            BufferedInputStream bis = _new BufferedInputStream(//3 fichier temporaire (tampon de TMDB)
+                    _new GZIPInputStream(//2 décompression du fichier gzip
+                            _new URL(url).openStream()//1 ouverture du stream, en fonction de l'url
                     )
             );
             //AUTRE MÉTHODE
+*/
 /*            // file stream
-            InputStream httpIS = new URL(url).openStream();
+            InputStream httpIS = _new URL(url).openStream();
             // unzip file
-            InputStream gzipIS = new GZIPInputStream(httpIS);
+            InputStream gzipIS = _new GZIPInputStream(httpIS);
             // buffering the file : read block by block to gain performance
-            InputStream bufferedIS = new BufferedInputStream(gzipIS);
+            InputStream bufferedIS = _new BufferedInputStream(gzipIS);
 
-            System.out.println(bufferedIS);*/
+            System.out.println(bufferedIS);*//*
+
 
             //Parsing du fichier avec la bibliothèque json.org
-            BufferedReader br = new BufferedReader(new InputStreamReader(bis, StandardCharsets.UTF_8));
+            BufferedReader br = _new BufferedReader(_new InputStreamReader(bis, StandardCharsets.UTF_8));
             String line;
             while((line = br.readLine()) != null){
-                JSONObject json = new JSONObject(line);
+                JSONObject json = _new JSONObject(line);
                 String title = json.get("original_title").toString();
                 long tmdbId = Long.valueOf(json.get("id").toString());
 //                long tmdbId = Long.parseLong(json.get("id").toString());
                 boolean adult = Boolean.valueOf(json.get("adult").toString());
-                TmdbFilm film = new TmdbFilm(title, tmdbId);
+                TmdbFilm film = _new TmdbFilm(title, tmdbId);
                 if(!adult && tmdbFilmDao.findById(tmdbId) == null){
                     tmdbFilmDao.save(film);
                 }
@@ -108,25 +110,25 @@ public class TmdbFilmManager {
 
         try {
             // file stream
-            InputStream is = new URL(url).openStream();
+            InputStream is = _new URL(url).openStream();
             // write file stream datas in a temp local file (tmpFile)
-            FileOutputStream fos = new FileOutputStream(tmpFile);
+            FileOutputStream fos = _new FileOutputStream(tmpFile);
             // do it with Guava (Google API for Java)
             ByteStreams.copy(is, fos);
             is.close();
             fos.flush();
             fos.close();
-            BufferedInputStream bis = new BufferedInputStream(new GZIPInputStream(new FileInputStream(tmpFile)));
+            BufferedInputStream bis = _new BufferedInputStream(_new GZIPInputStream(_new FileInputStream(tmpFile)));
 
             // parsing the file with json.org library
-            BufferedReader br = new BufferedReader(new InputStreamReader(bis, StandardCharsets.UTF_8));
+            BufferedReader br = _new BufferedReader(_new InputStreamReader(bis, StandardCharsets.UTF_8));
             String line;
             while((line = br.readLine()) != null) {
-                JSONObject json = new JSONObject(line);
+                JSONObject json = _new JSONObject(line);
                 String title = json.get("original_title").toString();
                 long tmdbId = Long.valueOf(json.get("id").toString());
                 boolean adult = Boolean.valueOf(json.get("adult").toString());
-                TmdbFilm film = new TmdbFilm(title, tmdbId);
+                TmdbFilm film = _new TmdbFilm(title, tmdbId);
                 if(!adult && tmdbFilmDao.findById(tmdbId) == null) {
                     tmdbFilmDao.save(film);
                 }
@@ -140,3 +142,4 @@ public class TmdbFilmManager {
 
 
 }
+*/

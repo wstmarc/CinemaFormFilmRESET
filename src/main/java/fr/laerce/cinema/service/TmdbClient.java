@@ -27,21 +27,21 @@ import java.util.Set;
 public class TmdbClient {
 
     //   !!!!!!!! AVEC AUTHENTIFICATION  !!!!!!!
-    @Value("${tmdb.api.key}") // <<--
+    @Value("${tmdb.api.key}") // <<-- //TODO vérifier la clé TMDB: tmdbfilmclient
     private String apiKey;
 
-    @Autowired                          //#
-    ImageManager imageManager;          //#
-    @Autowired                          //#
-    FilmManager filmManager;            //#
-    @Autowired                          //#
-    PersonManager personManager;        //#
-    @Autowired                          //#
-    RoleDao roleDao;                    //#
-    @Autowired                          //#
-    GenreManager genreManager;          //#
+    @Autowired
+    ImageManager imageManager;
+    @Autowired
+    FilmManager filmManager;
+    @Autowired
+    PersonManager personManager;
+    @Autowired
+    RoleDao roleDao;
+    @Autowired
+    GenreManager genreManager;
 
-    private long secondsBeforeReset(String value){//#########MIN
+    private long secondsBeforeReset(String value){
         long timestamp = Long.valueOf(stripBraces(value));
         LocalDateTime resetTime =
                 LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault());
@@ -53,7 +53,7 @@ public class TmdbClient {
         return value.substring(0, value.length()-1).substring(1);
     }
 
-    public void getMovieByTmdbId(long id) throws Exception {
+    public void getMovieByTmdbId(long id) throws Exception {//Biggy#
         RestTemplate template = new RestTemplate();
         ResponseEntity<String> response;
         long reset;
@@ -70,6 +70,7 @@ public class TmdbClient {
         InputStream image =  new URL(url).openStream();
         imageManager.savePoster(filmtest, image);
         filmtest.setSummary(film.getString("overview"));
+        filmtest.setVoteAverage(film.getDouble("vote_average"));//#
         filmtest.setReleaseDate(LocalDate.parse(film.getString("release_date")));
         filmtest.setIdtmdb(Long.valueOf(film.getString("id")));
         boolean adult = film.getBoolean("adult");
@@ -80,13 +81,12 @@ public class TmdbClient {
             filmtest=filmManager.findByIdTmdb(filmtest.getIdtmdb());
         }
 
-
 //        System.out.println("Titre : "+film.getString("title"));
 
         Set<Genre> genres1 = new HashSet<>();
         for(int i = 0; i < genres.length(); i++){
             JSONObject genre = (JSONObject) genres.get(i);
-            long idgenre = Long.valueOf(genre.getString("id"));
+            long idgenre = Long.valueOf(genre.getString("id"));//Biggy#
             if (genreManager.existsByIdtmdb( idgenre)){
                 genres1.add(genreManager.findByIdTmdb(idgenre));
             }
@@ -161,12 +161,16 @@ public class TmdbClient {
                 personne.setBirthday(LocalDate.parse(personneTest.optString("birthday")));
             }
             if (!personneTest.isNull("profile_path")){
-                Thread.sleep(100);
+//                Thread.sleep(100);//#
                 String url2 = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+personneTest.getString("profile_path");
                 InputStream image2 =  new URL(url2).openStream();
                 imageManager.savePhoto(personne, image2);
             }
-
+            /*biography == surname dans ma bdd*/
+            personne.setSurname(personneTest.getString("biography"));   //#
+            /*place_of_birth == givenname dans ma bdd*/
+//            personne.setGivenname(personneTest.getString("place_of_birth"));
+            personne.setPlace_of_birth(personneTest.getString("place_of_birth"));//#
             personne.setName(personneTest.getString("name"));
             personne.setIdtmdb(Long.valueOf(personneTest.getString("id")));
             if (!personManager.existsByIdtmdb(personne.getIdtmdb()))
@@ -188,60 +192,6 @@ public class TmdbClient {
 //            System.out.println(role.getString("name")+" joue "+ role.getString("character"));
         }
         System.out.println("FINIT");
-    }//#########MAX
-
-    /*@Value("${path.movies}")
-    private String pathMovie;
-
-    private long secondsBeforeReset(String value){
-        long timestamp = Long.valueOf(stripBraces(value));
-        LocalDateTime resetTime =
-                LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault());
-        LocalDateTime now = LocalDateTime.now();
-        return now.until( resetTime, ChronoUnit.SECONDS);
     }
 
-    private String stripBraces(String value){
-        return value.substring(0, value.length()-1).substring(1);
-    }
-
-    public void getMovieByTmdbId(long id) throws Exception {
-        RestTemplate template = new RestTemplate();
-        ResponseEntity<String> response;
-        long reset;
-
-//      TODO:  Dans la BDD interne de l'appli, ajouter les genres de la BDD externe tmdb avec leur id propre dans la BDD interne.
-        // à l'aide de ce lien
-//  "/3/genre/movie/list?api_key="+apiKey+"&language=fr-FR";
-        // Autrement dit: Adapter la BDD interne à celle de TMDb.
-
-        // ---->>
-        String resourceUrl = pathMovie+id+"?api_key="+apiKey+"&language=fr-FR";
-        response = template.getForEntity(resourceUrl, String.class);
-        System.out.println(response.getBody());                             //*1
-        JSONObject film = new JSONObject(response.getBody());
-        JSONArray genres = (JSONArray) film.get("genres");
-        System.out.println("Titre : "+film.getString("title"));          //*2
-        for(int i = 0; i < genres.length(); i++){
-            JSONObject genre = (JSONObject) genres.get(i);
-            System.out.println("- Genre : "+genre.getString("name"));    //*3
-        }
-                                                                            //*4
-        System.out.println("--------\nRequetes restantes : "+stripBraces(response.getHeaders().get("x-ratelimit-remaining").toString())); //stripBraces() pour enlever les crochets.
-        reset = secondsBeforeReset(response.getHeaders().get("x-ratelimit-reset").toString());
-        System.out.println("Temps restant avant reset : "+reset+"\n\n");    //*5
-
-        // ---->>
-        String resourceCredit = pathMovie+id+"/credits?api_key="+apiKey+"&language=fr-FR";
-        response = template.getForEntity(resourceCredit, String.class);
-        JSONObject credit = new JSONObject(response.getBody());
-        JSONArray cast = (JSONArray) credit.get("cast");
-        for (int i = 0; i < cast.length(); i++ ) {
-            JSONObject role = (JSONObject) cast.get(i);                     //*6
-            System.out.println(role.getString("name")+" joue "+ role.getString("character"));
-        }                                                                   //*7
-        System.out.println("--------\nRequetes restantes : "+stripBraces(response.getHeaders().get("x-ratelimit-remaining").toString()));
-        reset = reset = secondsBeforeReset(response.getHeaders().get("x-ratelimit-reset").toString());
-        System.out.println("Temps restant avant reset : "+reset+"\n\n");    //*8
-    }*/
 }

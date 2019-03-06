@@ -67,7 +67,7 @@ public class TestJpaUser {
     @Rollback
     public void testGetAdmin(){
 
-        User user = userDao.findOne(1L);
+        User user = userDao.findById(1L);
         assertEquals("L'utilisateur est Admin",user.getName(),"Admin");
         user = userDao.findByName("Admin");
         assertNotNull("Admin est bien récupéré en minucsules", user);

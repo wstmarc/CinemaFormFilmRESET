@@ -33,9 +33,7 @@ public class Review {
         transitionsTo.put(Review.ABANDONED, new ArrayList<>());
         transitionsTo.put(Review.DELETED, new ArrayList<>());
         transitionsTo.put(Review.REJECTED, new ArrayList<>());
-
     }
-
 
     static {
         transitions = new HashMap<>();
@@ -50,9 +48,6 @@ public class Review {
         transitions.put(Review.MUST_BE_MODIFIED, Arrays.asList(new Integer[]{Review.WAITING_MODERATION}));
         transitions.put(Review.ABANDONED, Arrays.asList(new Integer[]{Review.MUST_BE_MODIFIED}));
     }
-
-
-
 
     public static final int WAITING_MODERATION = 1;
     public static final int PUBLISHED = 2;
@@ -182,7 +177,6 @@ public class Review {
         return Review.transitionsTo.get(this.getState()).contains(targetState);
 
     /*
-
     boolean result;
     switch (targetState) {
       case Review.REJECTED:

@@ -42,18 +42,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-//                    .antMatchers("/**").permitAll()
-                    .antMatchers("/", "/home","/login", "/userlist", "/newpass").permitAll()
-//                    .antMatchers("/**").hasAnyAuthority("ADMIN")
-//                    .antMatchers("/admin/**").hasRole("Admin")
+                    .antMatchers("/", "/home").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
                     .loginPage("/login")
+                    .defaultSuccessUrl("/index",true)//Pour forcer une redirection vers index après authentification.
                     .permitAll()
                     .and()
                 .logout()
-                    .permitAll();
+                    .permitAll()
+                    .and()
+                .csrf().disable();//Pour empêcher la falsification de requêtes intersites. (attaques CSRF: Cross-Site Request Forgery).
     }
 
 
@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser("recup")
 //                .withUser("Admin")
-                .password("recup")
+                .password(bCryptPasswordEncoder().encode("recup"))
 //                .password("p@ssw0rd")
                 .roles("ADMIN","USER")
                 .authorities("WITHDRAW","DEPOSIT","ADMIN");

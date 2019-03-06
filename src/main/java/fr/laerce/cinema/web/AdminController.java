@@ -1,26 +1,29 @@
 package fr.laerce.cinema.web;
 
 import fr.laerce.cinema.dao.TmdbFilmDao;
-//import fr.laerce.cinema.service.ImportFilmsFromTMDB;
 import fr.laerce.cinema.model.User;
+import fr.laerce.cinema.service.ImportFilmsFromTMDB;
 import fr.laerce.cinema.service.JpaUserService;
-import fr.laerce.cinema.service.TmdbFilmManager;
+//import fr.laerce.cinema.service.TmdbFilmManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;//bibliothèque utile pour les MESSAGES FLASH.
 
 public class AdminController {
     @Autowired
     private TmdbFilmDao tmdbFilmDao;
 
-    @Autowired
+
     //équivalent
 //    private ImportFilmsFromTMDB importFilmsFromTMDB;
-    private TmdbFilmManager importFilmsFromTMDB;
+    @Autowired
+    private ImportFilmsFromTMDB importFilmsFromTMDB;//#
+//@Autowired
+//    private TmdbFilmManager importFilmsFromTMDB;
 
     //    private UserDao userDao;
     @Autowired
@@ -31,7 +34,7 @@ public class AdminController {
 
         model.addAttribute("nom", "FriteMoule");
 
-//        ImportFilmsFromTMDB importFilmsFromTMDB = new ImportFilmsFromTMDB(tmdbFilmDao);
+//        ImportFilmsFromTMDB importFilmsFromTMDB = _new ImportFilmsFromTMDB(tmdbFilmDao);
 //        importFilmsFromTMDB.ImportMoviesViaOnlineTmdbFile();
         importFilmsFromTMDB.ImportMoviesViaLocalTempTmdbFile();
 
@@ -40,14 +43,13 @@ public class AdminController {
     }
 
 
-    //    @GetMapping("admin/newpass")
+    /* MAPPINGS gérés avec SPRING SECURITY */
     @GetMapping("/userlist")
     public String userlist(Model model) {
 //        Iterable<User> users = userDao.findAll();
         Iterable<User> users = jpaUserService.list();
         model.addAttribute("userList", users);
         System.out.println("liste des utilisateurs: " + users);//
-//        return "redirect:/admin/userlist";
 //        return "admin/userlist";
         return "/userlist";
 //        return "/newpass";
@@ -73,5 +75,4 @@ public class AdminController {
         }
         return "redirect:/home";
     }
-
 }

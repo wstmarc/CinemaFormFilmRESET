@@ -56,11 +56,9 @@ public class ImageManager {
 
             Files.copy(fi, new File(filePath).toPath());
 
-        }catch (IOException ioe){
+        } catch (IOException ioe){
             System.out.println("Erreur sur nom d'image : "+ioe.getMessage());
         }
-
-
         return fileName;
     }
 
