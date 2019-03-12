@@ -17,8 +17,9 @@
     <h1 sec:authorize="hasAnyAuthority('ROLE_USER')">Page USER</h1>
     <fieldset><legend><b><em>Formulaire Nouveau Mot de Passe</em></b></legend>
         <form action="/newpass" class="formulaire" method="post">
-            <input name="userId" type="hidden" th:text="${userId}">
-            <!--<p th:text="${user.getName()}"></p>-->
+                <!--<input name="userId" type="hidden" th:if="${userId != null}" th:value="${userId}" value="Aucune valeur pour l'Id User !">-->
+                <input name="id" type="hidden" th:if="${userId}" th:value="${userId}" value="Aucune valeur pour l'Id User !">
+                <!--<p th:text="${user.getName()}"></p>-->
 
             <!--<label for="userRole"/><input sec:authorize="hasAnyAuthority('ROLE_USER')" name="userRole" id="userRole" type="text" placeholder="Votre ancien mot de passe"><br/>-->
             <label for="userPass1"/><input size="50" name="userPass1" id="userPass1" type="text" placeholder="Entrez votre mot de passe"><br/>

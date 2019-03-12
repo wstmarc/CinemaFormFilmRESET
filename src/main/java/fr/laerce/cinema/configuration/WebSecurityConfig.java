@@ -27,8 +27,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JpaUserDetailsService jpaUserDetailsService;
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
+/*    @Autowired
     public void setUserDetailsService(JpaUserDetailsService jpaUserDetailsService){
+        this.jpaUserDetailsService = jpaUserDetailsService;
+    }*/
+    @Autowired
+    public void WebSecurityConfig(JpaUserDetailsService jpaUserDetailsService){
         this.jpaUserDetailsService = jpaUserDetailsService;
     }
 

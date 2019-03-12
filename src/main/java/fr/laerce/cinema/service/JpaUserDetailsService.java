@@ -37,6 +37,10 @@ public class JpaUserDetailsService implements UserDetailsService {
     public void setUserDao(UserDao userDao){
         this.userDao = userDao;
     }
+//    @Autowired
+//    public void JpaUserDetailsService(UserDao userDao){
+//        this.userDao = userDao;
+//    }
 
     @Override
     @Transactional(readOnly = true)

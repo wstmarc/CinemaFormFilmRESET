@@ -6,13 +6,15 @@ import fr.laerce.cinema.service.ImportFilmsFromTMDB;
 import fr.laerce.cinema.service.JpaUserService;
 //import fr.laerce.cinema.service.TmdbFilmManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;//bibliothèque utile pour les MESSAGES FLASH.
 
+import java.math.BigInteger;
+
+//@RequestMapping("/admin")
+@Controller
 public class AdminController {
     @Autowired
     private TmdbFilmDao tmdbFilmDao;
@@ -56,15 +58,23 @@ public class AdminController {
     }
 
     @GetMapping("/newpass/{id}")
-    public String newpass(@PathVariable Long id, Model model){
+    public String newpassId(@PathVariable Long id, Model model){
+        System.out.println("Mapping GET newpass");
         model.addAttribute("userId", id);
         return "/newpass";
     }
 
-    @PostMapping("/newpass")
-    public String changepass(@RequestParam Long id, @RequestParam String userPass1, @RequestParam String userPass2, RedirectAttributes attributes){
+/*    @GetMapping("/newpass")
+    public String newpass(){
+        return "newpass";
+    }*/
 
-        System.out.println("Entrée POST newpass");
+//Le name du formulaire doit correspondre au @RequestParam
+
+    @PostMapping("/newpass")
+    //public String changepass(@RequestParam Long id, @RequestParam String userPass1, @RequestParam String userPass2, RedirectAttributes attributes){
+    public String changepass(@RequestParam Long id, @RequestParam String userPass1, @RequestParam String userPass2, RedirectAttributes attributes){
+        System.out.println("Mapping POST newpass");
         User user = jpaUserService.findById(id);
         if(!userPass1.equals(userPass2)){
             attributes.addFlashAttribute("messageFlash","Assurez-vous que vos mots de passe soient identiques!");
