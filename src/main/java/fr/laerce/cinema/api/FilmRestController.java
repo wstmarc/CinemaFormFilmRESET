@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+//Ce qui est retourné dans un restcontroller comme valeur est un objet convertit en json.
 @RestController
 @RequestMapping("/api/film")
 public class FilmRestController {
