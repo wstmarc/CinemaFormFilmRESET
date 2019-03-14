@@ -37,7 +37,7 @@
 
         if (this.options.totalPages < this.options.visiblePages) {
             this.options.visiblePages = this.options.totalPages;
-        }
+        }joel
 
         if (this.options.href) {
             this.options.startPage = this.getPageFromQueryString();

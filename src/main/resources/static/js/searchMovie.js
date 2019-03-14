@@ -128,13 +128,13 @@ $(document).ready(function () {
 
     //la pagination
     function Paging(totalPage) {
-        var obj = $("#pagination").twbsPagination({
-            totalPages: totalPage,
-            visiblePages: 5,
-            onPageClick: function (event, page) {
-                CallAPI(page);
-            }
-        });
+            var obj = $("#pagination").twbsPagination({
+                totalPages: totalPage,
+                visiblePages: 5,
+                onPageClick: function (event, page) {
+                    CallAPI(page);
+                }
+            });
     }
 
 });
