@@ -30,7 +30,7 @@ $(document).ready
     {
         for(var i=0; i<tableau.length; i++)
         {
-            var src=tableau[i]+".jpg";
+            var src=tableau[i]+".png";
             var chaine="<img src='img/"+src+"' width='150' height='100' class='img-thumbnail' />"
             $("#album").append(chaine);
         }
