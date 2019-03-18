@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/film")
 public class FilmController {
@@ -65,8 +67,21 @@ public class FilmController {
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") long id, Model model) {
+/*        Integer mini, maxi;
+        mini = 0;
+        maxi = 5;
+        List<Play> roles = roleDao.findByFilm_IdOrderByRankAsc(id);
+        List<Play> rolesmodel = null;
+        for(int i = mini; i <= maxi; i++){//#
+            rolesmodel.add(roles.get(i));
+            System.out.println("rolesmodel: " + i + ", " + rolesmodel.get(i).getActor() + "dans le role de " + rolesmodel.get(i).getName());//#
+        }*///#
         model.addAttribute("film", filmManager.getById(id));
-        model.addAttribute("roles", roleDao.findByFilm_IdOrderByRankAsc(id)); //#
+        model.addAttribute("roles", roleDao.findByFilm_IdOrderByRankAsc(id).subList(0,5)); //#
+        //si le permier indice du rank de la liste est 0, alors le dernier élément est supprimé
+        //de sorte à ne récupérer au maximum que 5 roles dans la liste des rôles du film.
+
+//        model.addAttribute("roles", roles); //#
         return "film/detail";
     }
 

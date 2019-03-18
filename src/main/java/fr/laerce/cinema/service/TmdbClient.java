@@ -149,6 +149,7 @@ public class TmdbClient {
             }
         }
         JSONArray cast = (JSONArray) credit.get("cast");
+        Integer nbRoles = 0;
         for (int i = 0; i < cast.length(); i++ ) {
             JSONObject role = (JSONObject) cast.get(i);
             String resourcepersonne = "https://api.themoviedb.org/3/person/"+role.getString("id")+"?api_key="+apiKey+"&language=fr-FR";
@@ -187,7 +188,19 @@ public class TmdbClient {
             play.setFilm(filmtest);
             play.setName(role.getString("character"));
             play.setRank(role.getInt("order"));
-            roleDao.save(play);
+            if(!roleDao.existsByFilmAndActorAndName(play.getFilm(), play.getActor(), play.getName())){//#
+                roleDao.save(play);//#
+/*                nbRoles++;
+                if(nbRoles <= 5){
+                    roleDao.save(play);//#
+                    System.out.println("Ajout role: " + play.getActor() + "dans le rôle de " + play.getName());//#
+                } else {
+                    break;
+                }*/
+            }//#
+            /*else {
+                throw new RuntimeException("Ce rôle a déjà été importé");
+            }*/
 
 //            System.out.println(role.getString("name")+" joue "+ role.getString("character"));
         }

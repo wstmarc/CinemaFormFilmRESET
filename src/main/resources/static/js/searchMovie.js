@@ -48,7 +48,8 @@ $(document).ready(function () {
             $this.button('loading');
             setTimeout(function() {
                 $this.button('reset');
-            }, 500000);
+            // }, 500000);
+            }, 1000);
 
             $.ajax({
                 url: "/api/film/tmdb/" + idt,

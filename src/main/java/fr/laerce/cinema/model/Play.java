@@ -80,9 +80,24 @@ public class Play {
 
         Play play = (Play) o;
 
-        if (id != play.id) return false;
+//        if (id != play.id) return false;
+        if (id == play.id) return true;
+    Play that=(Play)o;
+        /*if(
+                this.getFilm().equals(that.getFilm())
+                &&
+                this.getActor().equals((that.getActor()))
+                &&
+                this.getName().equals(that.getName())
+        ){return true;}*/
+        return (this.getFilm().equals(that.getFilm())
+                &&
+                this.getActor().equals((that.getActor()))
+                &&
+                this.getName().equals(that.getName())
+        );
 
-        return true;
+        /*return false;*/
     }
 
     @Override
