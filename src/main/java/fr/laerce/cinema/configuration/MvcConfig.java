@@ -17,6 +17,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+//        TODO configuration MvcConfig : Retirer les pseudo-mappings
         registry.addViewController("/home").setViewName("home");
         registry.addViewController("/index").setViewName("index");//#
         registry.addViewController("/").setViewName("home");

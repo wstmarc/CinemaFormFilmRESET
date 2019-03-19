@@ -138,7 +138,7 @@
     <h1 th:text="${film.title}">Titre</h1>
     <div class="row">
         <div class="col-sm-3" style="background-color:yellow;">
-            <img style="width: 100%" src="#" th:src="@{'/img/poster/film/'+${film.id}}"/>
+            <img src="#" th:src="@{'/img/poster/film/'+${film.id}}"/>
         </div>
         <div class="row" style="background-color:blue;">
             <h4 class="real"><b>Réalisateur</b> : <span th:text="${film.director.name}">John Doe</span></h4>

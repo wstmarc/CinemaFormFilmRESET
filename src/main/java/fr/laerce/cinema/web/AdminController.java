@@ -41,9 +41,14 @@ public class AdminController {
         importFilmsFromTMDB.ImportMoviesViaLocalTempTmdbFile();
 
         //TODO: Retourner vers une interface d'administration plutôt que l'index
-        return "index";
+        return "importfilm";
     }
 
+    @GetMapping("/accueil")
+    public String accueil(){ return "accueil"; }
+
+    @GetMapping("/import")
+    public String rechercher(){return "importfilm";}
 
     /* MAPPINGS gérés avec SPRING SECURITY */
     @GetMapping("/userlist")
@@ -53,7 +58,7 @@ public class AdminController {
         model.addAttribute("userList", users);
         System.out.println("liste des utilisateurs: " + users);//
 //        return "admin/userlist";
-        return "/userlist";
+        return "userlist";
 //        return "/newpass";
     }
 
@@ -61,7 +66,7 @@ public class AdminController {
     public String newpassId(@PathVariable Long id, Model model){
         System.out.println("Mapping GET newpass");
         model.addAttribute("userId", id);
-        return "/newpass";
+        return "newpass";
     }
 
 /*    @GetMapping("/newpass")

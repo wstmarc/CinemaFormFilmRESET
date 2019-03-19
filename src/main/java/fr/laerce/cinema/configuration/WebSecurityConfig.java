@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.annotation.Resource;
+
 
 /**
  * Projet thyme-security
@@ -31,7 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void setUserDetailsService(JpaUserDetailsService jpaUserDetailsService){
         this.jpaUserDetailsService = jpaUserDetailsService;
     }*/
-    @Autowired
+//    @Autowired
+    @Resource
     public void WebSecurityConfig(JpaUserDetailsService jpaUserDetailsService){
         this.jpaUserDetailsService = jpaUserDetailsService;
     }
@@ -51,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                 .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl("/index",true)//Pour forcer une redirection vers index après authentification.
+                    .defaultSuccessUrl("/accueil",true)//Pour forcer une redirection vers index après authentification.
                     .permitAll()
                     .and()
                 .logout()
